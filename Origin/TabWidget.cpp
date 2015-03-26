@@ -27,11 +27,6 @@ TabWidget::~TabWidget()
 
 }
 
-void TabWidget::openFile()
-{
-
-}
-
 SetParametersTab::SetParametersTab(QWidget *parent)
 {
     theSetParameters = new SetParameters;

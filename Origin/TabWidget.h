@@ -25,9 +25,6 @@ class TabWidget : public QWidget
 public:
     explicit TabWidget(QWidget *parent = 0);
     ~TabWidget();
-
-public slots:
-    void openFile();
     
 private:
     QMenu *fileMenu;
