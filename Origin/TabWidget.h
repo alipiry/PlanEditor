@@ -14,10 +14,6 @@ class Formation;
 class QFileInfo;
 class QTabWidget;
 
-//namespace Ui {
-//class TabWidget;
-//}
-
 class TabWidget : public QWidget
 {
     Q_OBJECT

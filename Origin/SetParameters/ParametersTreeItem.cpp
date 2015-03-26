@@ -3,8 +3,6 @@
 #include <QStringList>
 #include <iostream>
 
-//using namespace std;
-
 ParametersTreeItem::ParametersTreeItem(const QVector<QVariant> &data, ParametersTreeItem *parent)
 {
     parentItem = parent;

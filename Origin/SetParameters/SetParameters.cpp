@@ -67,8 +67,6 @@ SetParameters::SetParameters(QWidget *parent) :
     buttonLayout1->addWidget(exitButton);
     buttonLayout1->addStretch();
 
-    loadFromFile();
-
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->addWidget(searchLabel, 0, 0);
     mainLayout->addWidget(view, 1, 1);

@@ -1,11 +1,10 @@
 #include "ParametersTreeModel.h"
-
-#include <QtGui>
-
 #include "ParametersTreeItem.h"
+
+#include <QFileDialog>
 #include <iostream>
 #include <fstream>
-#include <QFileDialog>
+#include <QtGui>
 
 ParametersTreeModel::ParametersTreeModel(const QStringList &headers, const QString &data,
                      QObject *parent)

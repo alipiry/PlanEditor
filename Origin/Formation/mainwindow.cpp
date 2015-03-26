@@ -33,12 +33,6 @@ void Monitor::mouseMoveEvent(QMouseEvent *ev)
     if (MouseClicked)
         emit mMove(sX, sY, ev->x(), ev->y());
     emit cordinatePointer(ev->x()*2, ev->y()*2);
-//    if (ev->x() == 0 || ev->y() == 0) {
-//        std::cout<<10<<std::endl;
-//        emit drawLine(ev->x(), ev->y());
-//    }
-
-
 }
 
 void MainWindow::getMouseMove(int x1, int y1, int x2, int y2)
@@ -114,7 +108,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     dirModel = new QFileSystemModel(this);
     dirModel->setRootPath(QDir::currentPath());
-//    dirModel->setFilter(QDir::Name | QDir::AllDirs);
 
     QStringList filters;
     filters << "*.txt" << "*.cfg";
@@ -136,27 +129,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     image = new QImage(1100/2, 800/2, QImage::Format_RGB888);
     painter = new QPainter(image);
-
-    ///       FixMe       ///
-//    QVBoxLayout *buttonLayout1 = new QVBoxLayout;
-//    buttonLayout1->addWidget(insertRowButton);
-//    buttonLayout1->addWidget(insertColumnButton);
-//    buttonLayout1->addWidget(removeRowButton);
-//    buttonLayout1->addWidget(removeColumnButton);
-//    buttonLayout1->addWidget(insertChildButton);
-//    buttonLayout1->addWidget(loadButton);
-//    buttonLayout1->addWidget(saveButton);
-//    buttonLayout1->addWidget(exitButton);
-//    buttonLayout1->addStretch();
-
-//    QGridLayout *mainLayout = new QGridLayout;
-//    mainLayout->addLayout(painter, 0, 0);
-//    mainLayout->addWidget(ui->treeView, 2, 0);
-//    mainLayout->addWidget(searchLine, 0, 1);
-//    mainLayout->addWidget(findButton, 0, 2);
-//    mainLayout->addLayout(buttonLayout1, 1, 2);
-
-//    setLayout(mainLayout);
 
     drawField();
     refreshUI();
