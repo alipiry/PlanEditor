@@ -49,7 +49,7 @@ SetParameters::SetParameters(QWidget *parent) :
     headers << tr("Title") << tr("Description");
 
     view = new QTreeView;
-    //view->setObjectName(QStringLiteral("view"));
+    view->setObjectName(QStringLiteral("view"));
     view->setAlternatingRowColors(true);
     view->setSelectionBehavior(QAbstractItemView::SelectItems);
     view->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
