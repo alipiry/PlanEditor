@@ -404,7 +404,6 @@ void MainWindow::loadConfig(const std::string& add)
 
         void pushAValue(char i, int value)
         {
-            std::cout<<(int)i<<std::endl;
             switch (i)
             {
             case 0:
@@ -543,8 +542,9 @@ void MainWindow::on_save_clicked()
 
 void MainWindow::on_load_clicked()
 {
-    if (!hasSaved && QMessageBox::warning(this, "Warn", "You have un-saved points,\nBy reloading, current points will be lost,\nAre you sure you want to reload?",
-                                          QMessageBox::No, QMessageBox::Yes) == QMessageBox::No)
+    if (!hasSaved && QMessageBox::warning(this,
+        "Warn", "You have un-saved points,\nBy reloading, current points will be lost,\nAre you sure you want to reload?",
+             QMessageBox::No, QMessageBox::Yes) == QMessageBox::No)
         return;
 
     hasSaved = true;
@@ -567,7 +567,9 @@ void MainWindow::on_clear_clicked()
 {
     if (!particles.size()) return;
 
-    if (QMessageBox::warning(this, "Warn", "Are you sure you want to clear all points?", QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes)
+    if (QMessageBox::warning(this,
+        "Warn", "Are you sure you want to clear all points?",
+            QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes)
     {
         particles.clear();
         drawField();
@@ -648,8 +650,9 @@ void MainWindow::on_update_clicked()
 
 void MainWindow::on_treeView_doubleClicked(const QModelIndex &index)
 {
-    if (!hasSaved && QMessageBox::warning(this, "Warn", "You have un-saved points,\nBy reloading, current points will be lost,\nAre you sure you want to reload?",
-                                          QMessageBox::No, QMessageBox::Yes) == QMessageBox::No)
+    if (!hasSaved && QMessageBox::warning(this,
+         "Warn", "You have un-saved points,\nBy reloading, current points will be lost,\nAre you sure you want to reload?",
+             QMessageBox::No, QMessageBox::Yes) == QMessageBox::No)
         return;
 
     hasSaved = true;
@@ -663,5 +666,4 @@ void MainWindow::on_treeView_doubleClicked(const QModelIndex &index)
     drawField();
     drawParticles();
     refreshUI();
-
 }
