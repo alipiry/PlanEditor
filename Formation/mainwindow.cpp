@@ -33,6 +33,12 @@ void Monitor::mouseMoveEvent(QMouseEvent *ev)
     if (MouseClicked)
         emit mMove(sX, sY, ev->x(), ev->y());
     emit cordinatePointer(ev->x()*2, ev->y()*2);
+//    if (ev->x() == 0 || ev->y() == 0) {
+//        std::cout<<10<<std::endl;
+//        emit drawLine(ev->x(), ev->y());
+//    }
+
+
 }
 
 void MainWindow::getMouseMove(int x1, int y1, int x2, int y2)
@@ -54,6 +60,7 @@ void MainWindow::getMouseMove(int x1, int y1, int x2, int y2)
 
 void MainWindow::getParticle(int x, int y, int cx, int cy)
 {
+    on_update_clicked();
     hasSaved = false;
 
     x = x-550/2;
@@ -91,6 +98,7 @@ void MainWindow::addParticle(const VoronoiParticle& p)
     ui->b_cx->setValue(p.cxraw());
     ui->b_cy->setValue(p.cyraw());
     ui->b_name->setText("");
+    ui->NumOfSup->setValue(p.num());
     ui->b_par->setValue(p.id());
 
     particles.push_back(p);
@@ -100,14 +108,15 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     SNAP_MAX(30),
-    address(""),
+    adr(""),
     hasSaved(true)
 {
     ui->setupUi(this);
     setMouseTracking(true);
 
-    dirModel = new QFileSystemModel(this);
-    dirModel->setRootPath(QDir::currentPath());
+    dirModel = new QFileSystemModel;
+    dirModel->setRootPath("/home");
+//    dirModel->setFilter(QDir::Name | QDir::AllDirs);
 
     QStringList filters;
     filters << "*.txt" << "*.cfg";
@@ -129,6 +138,35 @@ MainWindow::MainWindow(QWidget *parent) :
 
     image = new QImage(1100/2, 800/2, QImage::Format_RGB888);
     painter = new QPainter(image);
+
+    ui->save->setShortcut(QApplication::translate("SetParameters", "Ctrl+Shift+S", 0));
+    ui->simpleSave->setShortcut(QApplication::translate("SetParameters", "Ctrl+S", 0));
+    ui->load->setShortcut(QApplication::translate("SetParameters", "Ctrl+L", 0));
+    ui->clear->setShortcut(QApplication::translate("SetParameters", "Ctrl+R", 0));
+    ui->update->setShortcut(QApplication::translate("SetParameters", "Ctrl+U", 0));
+    ui->mirrorX->setShortcut(QApplication::translate("SetParameters", "Ctrl+X", 0));
+    ui->mirrorY->setShortcut(QApplication::translate("SetParameters", "Ctrl+Y", 0));
+
+    ///       FixMe       ///
+//    QVBoxLayout *buttonLayout1 = new QVBoxLayout;
+//    buttonLayout1->addWidget(insertRowButton);
+//    buttonLayout1->addWidget(insertColumnButton);
+//    buttonLayout1->addWidget(removeRowButton);
+//    buttonLayout1->addWidget(removeColumnButton);
+//    buttonLayout1->addWidget(insertChildButton);
+//    buttonLayout1->addWidget(loadButton);
+//    buttonLayout1->addWidget(saveButton);
+//    buttonLayout1->addWidget(exitButton);
+//    buttonLayout1->addStretch();
+
+//    QGridLayout *mainLayout = new QGridLayout;
+//    mainLayout->addLayout(painter, 0, 0);
+//    mainLayout->addWidget(ui->treeView, 2, 0);
+//    mainLayout->addWidget(searchLine, 0, 1);
+//    mainLayout->addWidget(findButton, 0, 2);
+//    mainLayout->addLayout(buttonLayout1, 1, 2);
+
+//    setLayout(mainLayout);
 
     drawField();
     refreshUI();
@@ -322,6 +360,7 @@ void MainWindow::on_b_id_editingFinished()
     ui->b_cx->setValue(p.cxraw());
     ui->b_cy->setValue(p.cyraw());
     ui->b_name->setText(QString::fromStdString(p._name));
+    ui->NumOfSup->setValue(p.num());
     ui->b_par->setValue(p.id());
 }
 
@@ -334,10 +373,10 @@ void MainWindow::saveConfig(const std::string& add)
         return;
     }
 
-    file << "# id, x, y [, cx, cy] [:name]\n" << std::endl;
+    file << "# id, x, y, NumOfSupporter [, cx, cy] [:name]\n" << std::endl;
     for (std::vector<VoronoiParticle>::const_iterator p=particles.begin(); p<particles.end(); p++)
     {
-        file << p->id() << ", " << p->xraw()*2 << ", " << p->yraw()*2;
+        file << p->id() << ", " << p->xraw()*2 << ", " << p->yraw()*2<<", "<<p->num();
         if (p->isMoved())
             file << ", " << p->cxraw()*2 << ", " << p->cyraw()*2;
 
@@ -348,11 +387,16 @@ void MainWindow::saveConfig(const std::string& add)
     }
 }
 
+void MainWindow::on_simpleSave_clicked()
+{
+    saveConfig(adr);
+}
+
 void MainWindow::loadConfig(const std::string& add)
 {
     class CFGReader {
     public:
-        int id, x, y, cx, cy;
+        int id, x, y, cx, cy, num;
         std::string s;
         bool textMode;
         bool isOk;
@@ -372,11 +416,13 @@ void MainWindow::loadConfig(const std::string& add)
                 y = value;
                 break;
             case 3:
-                cx = value;
+                num = value;
                 break;
             case 4:
-                cy = value;
+                cx = value;
                 break;
+            case 5:
+                cy = value;
             }
         }
 
@@ -386,7 +432,7 @@ void MainWindow::loadConfig(const std::string& add)
 
             isOk = false;
             s = "";
-            id = x = y = cx = cy = 0;
+            id = x = y = cx = cy = num =0;
             textMode = false;
 
             varCounter=0;
@@ -397,6 +443,7 @@ void MainWindow::loadConfig(const std::string& add)
 
             for (i=0; str[i] != '\0'; i++)
             {
+                std::cout<<(int)varCounter<<std::endl;
                 const char c = str[i];
 
                 if (c == '#' || c==';') //-- A Comment
@@ -413,7 +460,7 @@ void MainWindow::loadConfig(const std::string& add)
 
                 if (c == ',') //-- Push An other
                 {
-                    if (varCounter < 5)
+                    if (varCounter < 6)
                         pushAValue(varCounter, neg?(-1*varValue):varValue);
                     varValue = 0;
                     varCounter++;
@@ -472,9 +519,10 @@ void MainWindow::loadConfig(const std::string& add)
         p._cx = cfgReader.cx/2;
         p._cy = cfgReader.cy/2;
         p._id = cfgReader.id;
+        p._NumOfSup = cfgReader.num;
         p._name = cfgReader.s;
 
-        std::cout << p.id() << ") " << p.xraw() << ", " << p.yraw() << std::endl;
+        std::cout << p.id() << ") " << p.xraw() << ", " << p.yraw() <<", "<<p.num()<< std::endl;
 
         particles.push_back(p);
     }
@@ -482,6 +530,7 @@ void MainWindow::loadConfig(const std::string& add)
 
 void MainWindow::on_save_clicked()
 {
+    on_update_clicked();
     QString address = QFileDialog::getSaveFileName(this,
         tr("SetParameters"), "",
         tr("Config-File *.cfg(*.cfg);;All Files (*)"));
@@ -493,8 +542,9 @@ void MainWindow::on_save_clicked()
 
 void MainWindow::on_load_clicked()
 {
-    if (!hasSaved && QMessageBox::warning(this, "Warn", "You have un-saved points,\nBy reloading, current points will be lost,\nAre you sure you want to reload?",
-                                          QMessageBox::No, QMessageBox::Yes) == QMessageBox::No)
+    if (!hasSaved && QMessageBox::warning(this,
+        "Warn", "You have un-saved points,\nBy reloading, current points will be lost,\nAre you sure you want to reload?",
+             QMessageBox::No, QMessageBox::Yes) == QMessageBox::No)
         return;
 
     hasSaved = true;
@@ -504,6 +554,7 @@ void MainWindow::on_load_clicked()
         tr("Formation"), "",
         tr("Config-File *.cfg(*.cfg);;All Files (*)"));
 
+    adr = address.toStdString();
     std::cout << "Loading file from " << address.toStdString() << std::endl;
     loadConfig(address.toStdString());
 
@@ -516,7 +567,9 @@ void MainWindow::on_clear_clicked()
 {
     if (!particles.size()) return;
 
-    if (QMessageBox::warning(this, "Warn", "Are you sure you want to clear all points?", QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes)
+    if (QMessageBox::warning(this,
+        "Warn", "Are you sure you want to clear all points?",
+            QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes)
     {
         particles.clear();
         drawField();
@@ -588,6 +641,7 @@ void MainWindow::on_update_clicked()
         p._cy = ui->b_cy->value();
     }
     p._name = ui->b_name->text().toStdString();
+    p._NumOfSup = ui->NumOfSup->value();
 
     drawField();
     drawParticles();
@@ -596,8 +650,9 @@ void MainWindow::on_update_clicked()
 
 void MainWindow::on_treeView_doubleClicked(const QModelIndex &index)
 {
-    if (!hasSaved && QMessageBox::warning(this, "Warn", "You have un-saved points,\nBy reloading, current points will be lost,\nAre you sure you want to reload?",
-                                          QMessageBox::No, QMessageBox::Yes) == QMessageBox::No)
+    if (!hasSaved && QMessageBox::warning(this,
+         "Warn", "You have un-saved points,\nBy reloading, current points will be lost,\nAre you sure you want to reload?",
+             QMessageBox::No, QMessageBox::Yes) == QMessageBox::No)
         return;
 
     hasSaved = true;
@@ -605,10 +660,10 @@ void MainWindow::on_treeView_doubleClicked(const QModelIndex &index)
 
     QString strPath = dirModel->fileInfo(index).absoluteFilePath();
     std::cout << "Loading file from " << strPath.toStdString() << std::endl;
+    adr = strPath.toStdString();
     loadConfig(strPath.toStdString());
 
     drawField();
     drawParticles();
     refreshUI();
-
 }
