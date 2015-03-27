@@ -17,9 +17,9 @@ namespace Ui
 class VoronoiParticle
 {
 public:
-    VoronoiParticle(int X, int Y, const VoronoiParticle& parent) : _x(X), _y(Y), _cx(parent._cx), _cy(parent._cy), _name(parent._name), _id(parent._id), _NumOfSup(parent._NumOfSup), _isChild(true), _isMoved(false) { }
-    VoronoiParticle(int X, int Y, std::string Name="", int num=0) : _x(X), _y(Y), _cx(X), _cy(Y), _name(Name), _id(_aiID), _NumOfSup(num), _isChild(false), _isMoved(false) { _aiID++; }
-    VoronoiParticle(int X, int Y, int cX, int cY, int num=0, std::string Name="") : _x(X), _y(Y), _cx(cX), _cy(cY), _name(Name), _NumOfSup(num), _id(_aiID), _isChild(false), _isMoved(true) { _aiID++; }
+    VoronoiParticle(int X, int Y, const VoronoiParticle& parent) : _x(X), _y(Y), _cx(parent._cx), _cy(parent._cy), _name(parent._name), _id(parent._id), _isChild(true), _isMoved(false) { }
+    VoronoiParticle(int X, int Y, std::string Name="") : _x(X), _y(Y), _cx(X), _cy(Y), _name(Name), _id(_aiID), _isChild(false), _isMoved(false) { _aiID++; }
+    VoronoiParticle(int X, int Y, int cX, int cY, std::string Name="") : _x(X), _y(Y), _cx(cX), _cy(cY), _name(Name), _id(_aiID), _isChild(false), _isMoved(true) { _aiID++; }
 
     int x()  const { return _x  + 100/2 + 450/2; }
     int y()  const { return 100/2 + 300/2 - _y; }
@@ -31,19 +31,12 @@ public:
 
     int xraw()  const { return _x; }
     int yraw()  const { return _y; }
-    int cxraw() const {
-        std::cout<<_cx<<std::endl;
-        return _cx;
-                      }
+    int cxraw() const { return _cx; }
     int cyraw() const { return _cy; }
-    int num()   const {
-        std::cout<<_NumOfSup<<std::endl;
-        return _NumOfSup;
-                      }
 
     int _x, _y, _cx, _cy;
     std::string _name;
-    unsigned int _id, _NumOfSup;
+    unsigned int _id;
 
 private:
     bool _isChild;
@@ -89,7 +82,7 @@ private:
     Monitor* monitor;
     std::vector<VoronoiParticle> particles;
     const int SNAP_MAX;
-    std::string adr;
+    QString address;
     bool hasSaved;
 
     void drawField();
@@ -102,7 +95,6 @@ private:
     void addParticle(const VoronoiParticle& p);
     void saveConfig(const std::string& add);
     void loadConfig(const std::string& add);
-    void simpleSaveFile();
 
 private slots:
     void getParticle(int x, int y, int cx, int cy);
@@ -117,7 +109,6 @@ private slots:
     void on_mirrorY_clicked();
     void on_load_clicked();
     void on_treeView_doubleClicked(const QModelIndex &index);
-    void on_simpleSave_clicked();
 };
 
 #endif // MAINWINDOW_H
