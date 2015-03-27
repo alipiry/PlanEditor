@@ -143,7 +143,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->simpleSave->setShortcut(QApplication::translate("SetParameters", "Ctrl+S", 0));
     ui->load->setShortcut(QApplication::translate("SetParameters", "Ctrl+L", 0));
     ui->clear->setShortcut(QApplication::translate("SetParameters", "Ctrl+R", 0));
-    ui->update->setShortcut(QApplication::translate("SetParameters", "Ctrl+U", 0));
+    ui->update->setShortcut(QApplication::translate("SetParameters","Enter", 0));
     ui->mirrorX->setShortcut(QApplication::translate("SetParameters", "Ctrl+X", 0));
     ui->mirrorY->setShortcut(QApplication::translate("SetParameters", "Ctrl+Y", 0));
 
@@ -267,7 +267,13 @@ void MainWindow::drawParticles()
     painter->setPen(QPen(Qt::black));
     for (std::vector<VoronoiParticle>::const_iterator p=particles.begin(); p<particles.end(); p++)
         if (p->_name != "")
-            painter->drawText(p->x()-5, p->y()+15, QString::fromStdString(p->_name));
+            painter->drawText(p->x(), p->y()+15, QString::fromStdString(p->_name));
+
+    //-- Draw ID Numbers
+    painter->setBrush(Qt::NoBrush);
+    painter->setPen(QPen(Qt::black));
+    for (std::vector<VoronoiParticle>::const_iterator p=particles.begin(); p<particles.end(); p++)
+            painter->drawText(p->x()-15, p->y()+15, QString::fromStdString(tr("%1").arg(p->_id).toStdString()) + ".");
 
     //-- Draw Borders
     painter->setPen(QPen(Qt::green, 1));
@@ -575,6 +581,7 @@ void MainWindow::on_clear_clicked()
         drawField();
         drawParticles();
         refreshUI();
+        VoronoiParticle::_aiID = 0;
 
         hasSaved = true;
     }

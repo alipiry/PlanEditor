@@ -44,11 +44,11 @@ public:
     int _x, _y, _cx, _cy;
     std::string _name;
     unsigned int _id, _NumOfSup;
+    static unsigned int _aiID;
 
 private:
     bool _isChild;
     bool _isMoved;
-    static unsigned int _aiID;
 };
 
 class Monitor : public QLabel
