@@ -20,7 +20,7 @@ HighLevelParam::HighLevelParam(QWidget *parent)
     grid->addWidget(createKickOffGroup(), 0, 1);
     setLayout(grid);
 
-    setWindowTitle(tr("Group Boxes"));
+    setWindowTitle(tr("High Level Strategy"));
     resize(300, 250);
 }
 
@@ -33,14 +33,30 @@ QGroupBox *HighLevelParam::createHLParametersGroup()
 {
     QGroupBox *HighLevelParameters = new QGroupBox(tr("HighLevelParameters"));
 
-    fixPlan = new QCheckBox(tr("Fix Plan"));
+    fixPlan          = new QCheckBox(tr("Fix Plan"));
     fixPlan->setChecked(false);
-    commLess = new QCheckBox(tr("Communication-Less"));
+    commLess         = new QCheckBox(tr("Communication-Less"));
     commLess->setChecked(false);
-    QLabel *numOfPlayersLabel = new QLabel(tr("Number Of Players : "));
-    numOfPlayers = new QSpinBox;
+    QLabel *numOfPlayersLabel     = new QLabel(tr("Number Of Players : "));
+    numOfPlayers     = new QSpinBox;
     QLabel *formationVersionLabel = new QLabel(tr("Formation Version   : "));
     formationVersion = new QSpinBox;
+
+    QLabel *kickOffTarget = new QLabel(tr("Kick-Off Target : { "));
+    QLabel *KickOff_X     = new QLabel(tr(" X : "));
+    KickOffX              = new QSpinBox;
+    QLabel *KickOff_Y     = new QLabel(tr("  Y : "));
+    KickOffY              = new QSpinBox;
+    QLabel *end     = new QLabel(tr("  }"));
+
+    QHBoxLayout *hbox1 = new QHBoxLayout;
+    hbox1->addWidget(kickOffTarget);
+    hbox1->addWidget(KickOff_X);
+    hbox1->addWidget(KickOffX);
+    hbox1->addWidget(KickOff_Y);
+    hbox1->addWidget(KickOffY);
+    hbox1->addWidget(end);
+    hbox1->addStretch(1);
 
     Apply = new QPushButton(tr("&Apply"));
     Apply->setShortcut(QApplication::translate("SetParameters", "Ctrl+A", 0));
@@ -60,6 +76,7 @@ QGroupBox *HighLevelParam::createHLParametersGroup()
     vbox->addWidget(commLess);
     vbox->addLayout(vbox1);
     vbox->addLayout(vbox2);
+    vbox->addLayout(hbox1);
     vbox->addWidget(Apply);
     vbox->addStretch(1);
     HighLevelParameters->setLayout(vbox);
@@ -73,21 +90,21 @@ QGroupBox *HighLevelParam::createHLParametersGroup()
 QGroupBox *HighLevelParam::createKickOffGroup()
 {
     QGroupBox *kickOff = new QGroupBox(tr("KickOff"));
-    kickOff->setCheckable(true);
-    kickOff->setChecked(false);
 
     QRadioButton *automat = new QRadioButton(tr("Auto"));
+    automat->setChecked(true);
+
     QRadioButton *toFreeSpace = new QRadioButton(tr("to Free Space"));
-    QRadioButton *dribbling = new QRadioButton(tr("Dribbling"));
-    QRadioButton *toTeamMate = new QRadioButton(tr("to TeamMate"));
-    QRadioButton *fix = new QRadioButton(tr("Fix    :  "));
-    QLabel       *X_label = new QLabel(tr("X : "));
+    QRadioButton *dribbling   = new QRadioButton(tr("Dribbling"));
+    QRadioButton *toTeamMate  = new QRadioButton(tr("to TeamMate"));
+    fix                       = new QRadioButton(tr("Fix    :  "));
+    QLabel       *X_label     = new QLabel(tr("X : "));
+    QLabel       *Y_label     = new QLabel(tr("Y : "));
+
     fix_x = new QSpinBox;
-    QLabel       *Y_label = new QLabel(tr("Y : "));
     fix_y = new QSpinBox;
     fix_x->setEnabled(false);
     fix_y->setEnabled(false);
-    automat->setChecked(true);
 
     QHBoxLayout *hbox = new QHBoxLayout;
     hbox->addStretch(1);
@@ -135,7 +152,16 @@ void HighLevelParam::setDisableXandY()
 void HighLevelParam::chaneFixPlanFlag(bool flag)
 {
     fixPlanFlag = flag;
-    std::cout << flag << std::endl;
+
+    if (flag == true) {
+        fix_x->setEnabled(true);
+        fix_y->setEnabled(true);
+    }
+
+    else {
+        fix_x->setEnabled(false);
+        fix_y->setEnabled(false);
+    }
 }
 
 void HighLevelParam::chaneCommLessFlag(bool flag)
@@ -161,16 +187,12 @@ void HighLevelParam::applyChanges()
 
     if (fixPlanFlag == true)
         strFix = "true";
-    else
-        strFix = "false";
 
     if (commLessFlag == true)
         strComm = "true";
-    else
-        strComm = "false";
 
     file << "fixPlan = " << strFix << std::endl
-        << "commless = " << strComm << std::endl
-        << "numOfPlayers = " << numOfPlayers->value() << std::endl
-        << "formationVersion = " << formationVersion->value() << std::endl;
+         << "commless = " << strComm << std::endl
+         << "numOfPlayers = " << numOfPlayers->value() << std::endl
+         << "formationVersion = " << formationVersion->value() << std::endl;
 }

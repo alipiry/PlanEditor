@@ -119,7 +119,6 @@ private slots:
     void on_treeView_doubleClicked(const QModelIndex &index);
     void on_simpleSave_clicked();
     void on_comboBox_currentIndexChanged(int index);
-    void on_comboBox_activated(int index);
 };
 
 #endif // MAINWINDOW_H

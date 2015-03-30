@@ -20,7 +20,7 @@ TabWidget::TabWidget(QWidget *parent) :
     mainLayout->addWidget(tabWidget);
     setLayout(mainLayout);
 
-    setWindowTitle(tr("Parameters"));
+    setWindowTitle(tr("Strategy  -----> Keep Calm and Edit Parameters :D"));
 }
 
 TabWidget::~TabWidget()

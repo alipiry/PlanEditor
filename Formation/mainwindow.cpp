@@ -33,12 +33,6 @@ void Monitor::mouseMoveEvent(QMouseEvent *ev)
     if (MouseClicked)
         emit mMove(sX, sY, ev->x(), ev->y());
     emit cordinatePointer(ev->x()*2, ev->y()*2);
-//    if (ev->x() == 0 || ev->y() == 0) {
-//        std::cout<<10<<std::endl;
-//        emit drawLine(ev->x(), ev->y());
-//    }
-
-
 }
 
 void MainWindow::getMouseMove(int x1, int y1, int x2, int y2)
@@ -114,13 +108,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     setMouseTracking(true);
 
-    dirModel = new QFileSystemModel;
-    dirModel->setRootPath("/home");
-//    dirModel->setFilter(QDir::Name | QDir::AllDirs);
+    dirModel = new QFileSystemModel(this);
+    dirModel->setRootPath("/home/s");
 
     QStringList filters;
     filters << "*.txt" << "*.cfg";
     dirModel->setNameFilters(filters);
+
+    dirModel->setNameFilters(filters);
+    dirModel->setNameFilterDisables(false);
 
     ui->treeView->setModel(dirModel);
     ui->treeView->setAnimated(false);
@@ -526,6 +522,7 @@ void MainWindow::loadConfig(const std::string& add)
         p._id = cfgReader.id;
         p._NumOfSup = cfgReader.num;
         p._name = cfgReader.s;
+        ui->comboBox->addItem(tr("Player %1").arg(cfgReader.id));
 
         std::cout << p.id() << ") " << p.xraw() << ", " << p.yraw() <<", "<<p.num()<< std::endl;
 
@@ -578,7 +575,8 @@ void MainWindow::on_clear_clicked()
     {
         particles.clear();
         for (int i=0; i<=VoronoiParticle::_aiID; i++)
-            ui->comboBox->removeItem(i);
+            ui->comboBox->removeItem(0);
+
         drawField();
         drawParticles();
         refreshUI();
@@ -658,6 +656,9 @@ void MainWindow::on_update_clicked()
 
 void MainWindow::on_treeView_doubleClicked(const QModelIndex &index)
 {
+    QString strPath = dirModel->fileInfo(index).absoluteFilePath();
+    if (!strPath.endsWith(".cfg")) return;
+
     if (!hasSaved && QMessageBox::warning(this,
          "Warn", "You have un-saved points,\nBy reloading, current points will be lost,\nAre you sure you want to reload?",
              QMessageBox::No, QMessageBox::Yes) == QMessageBox::No)
@@ -666,7 +667,9 @@ void MainWindow::on_treeView_doubleClicked(const QModelIndex &index)
     hasSaved = true;
     particles.clear();
 
-    QString strPath = dirModel->fileInfo(index).absoluteFilePath();
+    for (int i=0; i<=VoronoiParticle::_aiID; i++)
+        ui->comboBox->removeItem(0);
+
     std::cout << "Loading file from " << strPath.toStdString() << std::endl;
     adr = strPath.toStdString();
     loadConfig(strPath.toStdString());
@@ -689,9 +692,4 @@ void MainWindow::on_comboBox_currentIndexChanged(int index)
     ui->b_name->setText(QString::fromStdString(p._name));
     ui->NumOfSup->setValue(p.num());
     ui->b_par->setValue(p.id());
-}
-
-void MainWindow::on_comboBox_activated(int index)
-{
-
 }

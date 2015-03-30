@@ -1,6 +1,7 @@
 #ifndef HighLevelParam_H
 #define HighLevelParam_H
 
+#include <QRadioButton>
 #include <QPushButton>
 #include <QGroupBox>
 #include <QCheckBox>
@@ -18,13 +19,16 @@ public:
     ~HighLevelParam();
 
     bool commLessFlag = false;
-    bool fixPlanFlag = false;
+    bool fixPlanFlag  = false;
 
     QPushButton *Apply;
     QCheckBox   *fixPlan;
     QCheckBox   *commLess;
     QSpinBox    *numOfPlayers;
     QSpinBox    *formationVersion;
+    QSpinBox    *KickOffX;
+    QSpinBox    *KickOffY;
+    QRadioButton*fix;
 
 private slots:
     void setEnableXandY();
