@@ -8,7 +8,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = Origin_GUI
+TARGET = PlanEditor
 TEMPLATE = app
 
 
@@ -17,14 +17,16 @@ SOURCES += main.cpp\
     SetParameters/SetParameters.cpp \
     SetParameters/ParametersTreeModel.cpp \
     SetParameters/ParametersTreeItem.cpp \
-    Formation/mainwindow.cpp
+    Formation/mainwindow.cpp \
+    HLParameters/HighLevelParam.cpp
 
 
 HEADERS  += TabWidget.h \
     SetParameters/SetParameters.h \
     SetParameters/ParametersTreeModel.h \
     SetParameters/ParametersTreeItem.h \
-    Formation/mainwindow.h
+    Formation/mainwindow.h \
+    HLParameters/HighLevelParam.h
 
 FORMS += \
     Formation/mainwindow.ui

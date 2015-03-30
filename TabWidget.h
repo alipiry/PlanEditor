@@ -2,6 +2,7 @@
 #define TABWIDGET_H
 
 #include "SetParameters/SetParameters.h"
+#include "HLParameters/HighLevelParam.h"
 #include "Formation/mainwindow.h"
 
 #include <QMainWindow>
@@ -10,7 +11,7 @@
 #include <QString>
 
 class SetParameters;
-class Formation;
+class HighLevelParam;
 class QFileInfo;
 class QTabWidget;
 
@@ -48,4 +49,16 @@ public:
     MainWindow *theFormation;
 
 };
+
+class HighLevelTab : public QWidget
+{
+    Q_OBJECT
+
+public:
+    HighLevelTab(QWidget *parent = 0);
+
+    HighLevelParam *theHighLevelParam;
+
+};
+
 #endif // TABWIDGET_H

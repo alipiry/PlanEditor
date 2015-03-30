@@ -13,6 +13,7 @@ TabWidget::TabWidget(QWidget *parent) :
     tabWidget = new QTabWidget;
     tabWidget->addTab(new SetParametersTab(), tr("SetParameters"));
     tabWidget->addTab(new FormationTab(), tr("Formation"));
+    tabWidget->addTab(new HighLevelTab(), tr("HighLevel"));
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->setSizeConstraint(QLayout::SetNoConstraint);
@@ -40,5 +41,13 @@ FormationTab::FormationTab(QWidget *parent)
     theFormation = new MainWindow;
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(theFormation);
+    setLayout(mainLayout);
+}
+
+HighLevelTab::HighLevelTab(QWidget *parent)
+{
+    theHighLevelParam = new HighLevelParam;
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    mainLayout->addWidget(theHighLevelParam);
     setLayout(mainLayout);
 }
