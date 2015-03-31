@@ -7,6 +7,7 @@
 #include <QCheckBox>
 #include <QSpinBox>
 #include <QWidget>
+#include <QLabel>
 
 class QGroupBox;
 
@@ -29,6 +30,7 @@ public:
     QSpinBox    *KickOffX;
     QSpinBox    *KickOffY;
     QRadioButton*fix;
+    QLabel      *loadData;
 
 private slots:
     void setEnableXandY();

@@ -33,6 +33,7 @@ QGroupBox *HighLevelParam::createHLParametersGroup()
 {
     QGroupBox *HighLevelParameters = new QGroupBox(tr("HighLevelParameters"));
 
+    loadData = new QLabel(tr("This is Loading .....  fine :)"));
     fixPlan          = new QCheckBox(tr("Fix Plan"));
     fixPlan->setChecked(false);
     commLess         = new QCheckBox(tr("Communication-Less"));
@@ -78,6 +79,8 @@ QGroupBox *HighLevelParam::createHLParametersGroup()
     vbox->addLayout(vbox2);
     vbox->addLayout(hbox1);
     vbox->addWidget(Apply);
+    vbox->addStretch(1);
+    vbox->addWidget(loadData);
     vbox->addStretch(1);
     HighLevelParameters->setLayout(vbox);
 
@@ -191,8 +194,15 @@ void HighLevelParam::applyChanges()
     if (commLessFlag == true)
         strComm = "true";
 
-    file << "fixPlan = " << strFix << std::endl
-         << "commless = " << strComm << std::endl
-         << "numOfPlayers = " << numOfPlayers->value() << std::endl
-         << "formationVersion = " << formationVersion->value() << std::endl;
+    file << "/**" << std::endl
+         << " *  Parameters for strategy/planning of the game." << std::endl
+         << " *  High Level Behavior 2015" << std::endl
+         << " */" << std::endl << std::endl << "fixPlan = " << strFix <<";"
+         << "           // a fix planning/strategy is set on robots based on following parameters"<< std::endl
+         << "commless = " << strComm <<";" << "          // state of the communication"<< std::endl
+         << "numOfPlayers = " << numOfPlayers->value() << ";"<< "          // number of players to coordinate minus the goalkeeper"
+         << std::endl
+         << "formationVersion = " << formationVersion->value() <<";"<< "      // version of the formation" << std::endl
+         << std::endl << "kickTarget = {" <<std::endl << "  x = " << KickOffX->value()
+         << "; y = "<< KickOffY->value() <<";" << std::endl << "};";
 }

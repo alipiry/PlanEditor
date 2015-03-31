@@ -11,9 +11,9 @@ TabWidget::TabWidget(QWidget *parent) :
     QWidget(parent)
 {
     tabWidget = new QTabWidget;
-    tabWidget->addTab(new SetParametersTab(), tr("SetParameters"));
-    tabWidget->addTab(new FormationTab(), tr("Formation"));
     tabWidget->addTab(new HighLevelTab(), tr("HighLevel"));
+    tabWidget->addTab(new FormationTab(), tr("Formation"));
+    tabWidget->addTab(new SetParametersTab(), tr("SetParameters"));
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->setSizeConstraint(QLayout::SetNoConstraint);
