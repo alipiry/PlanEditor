@@ -28,7 +28,6 @@ SetParameters::SetParameters(QWidget *parent) :
     removeRowButton    = new QPushButton(tr("Remove&Row"));
     removeColumnButton = new QPushButton(tr("Remove&Column"));
     insertChildButton  = new QPushButton(tr("&InsertChild"));
-    exitButton = new QPushButton(tr("E&xit"));
     findButton = new QPushButton(tr("&Find"));
     loadButton = new QPushButton(tr("&Load..."));
     loadButton->setToolTip(tr("Load contacts from a file"));
@@ -40,7 +39,6 @@ SetParameters::SetParameters(QWidget *parent) :
     removeRowButton->setShortcut(QApplication::translate("SetParameters", "Ctrl+R", 0));
     removeColumnButton->setShortcut(QApplication::translate("SetParameters", "Ctrl+C", 0));
     insertChildButton->setShortcut(QApplication::translate("SetParameters", "Ctrl+I", 0));
-    exitButton->setShortcut(QApplication::translate("SetParameters", "Ctrl+X", 0));
     findButton->setShortcut(QApplication::translate("SetParameters", "Ctrl+F", 0));
     loadButton->setShortcut(QApplication::translate("SetParameters", "Ctrl+L", 0));
     saveButton->setShortcut(QApplication::translate("SetParameters", "Ctrl+S", 0));
@@ -64,7 +62,6 @@ SetParameters::SetParameters(QWidget *parent) :
     buttonLayout1->addWidget(insertChildButton);
     buttonLayout1->addWidget(loadButton);
     buttonLayout1->addWidget(saveButton);
-    buttonLayout1->addWidget(exitButton);
     buttonLayout1->addStretch();
 
     QGridLayout *mainLayout = new QGridLayout;
@@ -77,7 +74,6 @@ SetParameters::SetParameters(QWidget *parent) :
     setLayout(mainLayout);
     setWindowTitle(tr("Set ANY Parameters That You Like :D"));
 
-    connect(exitButton, SIGNAL(clicked()), this, SLOT(close()));
     connect(findButton, SIGNAL(clicked()), this, SLOT(findClicked()));
     connect(loadButton, SIGNAL(clicked()), this, SLOT(loadFromFile()));
     connect(saveButton, SIGNAL(clicked()), this, SLOT(saveToFile()));

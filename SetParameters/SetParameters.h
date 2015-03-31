@@ -30,7 +30,6 @@ public:
     QPushButton *removeRowButton;
     QPushButton *removeColumnButton;
     QPushButton *insertChildButton;
-    QPushButton *exitButton;
     QPushButton *findButton;
     QPushButton *loadButton;
     QPushButton *saveButton;
