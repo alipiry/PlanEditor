@@ -1,5 +1,7 @@
 #include "HighLevelParam.h"
 
+#include <QGraphicsItem>
+#include <QGraphicsView>
 #include <QApplication>
 #include <QRadioButton>
 #include <QPushButton>
@@ -20,6 +22,11 @@ HighLevelParam::HighLevelParam(QWidget *parent)
     grid->addWidget(createKickOffGroup(), 0, 1);
     setLayout(grid);
 
+    QString address = "../behaviorHLParameters.cfg";
+    std::string stradd = address.toStdString();
+    std::cout << "Loading file from " << stradd<< std::endl;
+    loadConfig(stradd);
+
     setWindowTitle(tr("High Level Strategy"));
     resize(300, 250);
 }
@@ -33,7 +40,6 @@ QGroupBox *HighLevelParam::createHLParametersGroup()
 {
     QGroupBox *HighLevelParameters = new QGroupBox(tr("HighLevelParameters"));
 
-    loadData = new QLabel(tr("This is Loading .....  fine :)"));
     fixPlan          = new QCheckBox(tr("Fix Plan"));
     fixPlan->setChecked(false);
     commLess         = new QCheckBox(tr("Communication-Less"));
@@ -80,8 +86,6 @@ QGroupBox *HighLevelParam::createHLParametersGroup()
     vbox->addLayout(hbox1);
     vbox->addWidget(Apply);
     vbox->addStretch(1);
-    vbox->addWidget(loadData);
-    vbox->addStretch(1);
     HighLevelParameters->setLayout(vbox);
 
     connect(fixPlan, SIGNAL(clicked(bool)), this, SLOT(chaneFixPlanFlag(bool)));
@@ -94,12 +98,12 @@ QGroupBox *HighLevelParam::createKickOffGroup()
 {
     QGroupBox *kickOff = new QGroupBox(tr("KickOff"));
 
-    QRadioButton *automat = new QRadioButton(tr("Auto"));
+    automat = new QRadioButton(tr("Auto"));
     automat->setChecked(true);
 
-    QRadioButton *toFreeSpace = new QRadioButton(tr("to Free Space"));
-    QRadioButton *dribbling   = new QRadioButton(tr("Dribbling"));
-    QRadioButton *toTeamMate  = new QRadioButton(tr("to TeamMate"));
+    toFreeSpace = new QRadioButton(tr("to Free Space"));
+    dribbling   = new QRadioButton(tr("Dribbling"));
+    toTeamMate  = new QRadioButton(tr("to TeamMate"));
     fix                       = new QRadioButton(tr("Fix    :  "));
     QLabel       *X_label     = new QLabel(tr("X : "));
     QLabel       *Y_label     = new QLabel(tr("Y : "));
@@ -144,12 +148,21 @@ void HighLevelParam::setEnableXandY()
 {
     fix_x->setEnabled(true);
     fix_y->setEnabled(true);
+    automat->setEnabled(false);
+    toFreeSpace->setEnabled(false);
+    dribbling->setEnabled(false);
+    toTeamMate->setEnabled(false);
+
 }
 
 void HighLevelParam::setDisableXandY()
 {
     fix_x->setEnabled(false);
     fix_y->setEnabled(false);
+    automat->setEnabled(true);
+    toFreeSpace->setEnabled(true);
+    dribbling->setEnabled(true);
+    toTeamMate->setEnabled(true);
 }
 
 void HighLevelParam::chaneFixPlanFlag(bool flag)
@@ -159,11 +172,19 @@ void HighLevelParam::chaneFixPlanFlag(bool flag)
     if (flag == true) {
         fix_x->setEnabled(true);
         fix_y->setEnabled(true);
+        automat->setEnabled(false);
+        toFreeSpace->setEnabled(false);
+        dribbling->setEnabled(false);
+        toTeamMate->setEnabled(false);
     }
 
     else {
         fix_x->setEnabled(false);
         fix_y->setEnabled(false);
+        automat->setEnabled(true);
+        toFreeSpace->setEnabled(true);
+        dribbling->setEnabled(true);
+        toTeamMate->setEnabled(true);
     }
 }
 
@@ -205,4 +226,113 @@ void HighLevelParam::applyChanges()
          << "formationVersion = " << formationVersion->value() <<";"<< "      // version of the formation" << std::endl
          << std::endl << "kickTarget = {" <<std::endl << "  x = " << KickOffX->value()
          << "; y = "<< KickOffY->value() <<";" << std::endl << "};";
+}
+
+void HighLevelParam::loadConfig(const std::string& add)
+{
+    std::ifstream file(add.c_str(), std::ios::in);
+    if (!file) { std::cerr << "File not found..." << std::endl; return; }
+
+    char sz[255];
+    while (!file.eof())
+    {
+        file.getline(sz, 255);
+        processLine(sz);
+    }
+}
+
+void HighLevelParam::processLine(const char* str)
+{
+    if (!str) return;
+    QString s = "";
+    QString w = "";
+    bool isValue = false;
+    bool neg = false;
+
+    unsigned int i;
+
+    for (i=0; str[i] != ';'; i++)
+    {
+        if (str[i] == '#' || (str[i] == '/' && str[i+1] == '/') ||
+                (str[i] == '/' && str[i+1] == '*') || str[i] == '*')
+            break;
+
+        if (str[i] == '\0')
+            break;
+
+        if (str[i] == ' ')
+            continue;
+
+        if (str[i] == '}' || str[i] == ';')
+            i++;
+
+        if (str[i] == '=' && str[i+2] != '{')
+        {
+            isValue = true;
+            continue;
+        }
+
+        if (str[i] == '-')
+        {
+            neg = true;
+            continue;
+        }
+
+        if (isValue)
+        {
+            for (i; str[i] != ';'; i++)
+                s += str[i];
+
+            isValue = false;
+        }
+
+        if (w == "fixPlan")
+        {
+            if (s == "false")
+                fixPlan->setChecked(false);
+            else {
+                fixPlan->setChecked(true);
+                fix_x->setEnabled(true);
+                fix_y->setEnabled(true);
+                automat->setEnabled(false);
+                toFreeSpace->setEnabled(false);
+                dribbling->setEnabled(false);
+                toTeamMate->setEnabled(false);
+            }
+        }
+
+        if (w == "commless")
+        {
+            if (s == "false")
+                commLess->setChecked(false);
+            else
+                commLess->setChecked(true);
+        }
+
+        if (w == "numOfPlayers")
+            numOfPlayers->setValue(s.toInt());
+
+        if (w == "formationVersion")
+            formationVersion->setValue(s.toInt());
+
+        if (w == "x") {
+            KickOffX->setValue(s.toInt());
+            w = "";
+            s = "";
+        }
+
+        if (w == "y") {
+            KickOffY->setValue(s.toInt());
+            w = "";
+            s = "";
+        }
+
+
+        std::cout<<w.toStdString()<<"  "<<s.toStdString()<<std::endl;
+
+        if (str[i] == ';')
+            i = i+2;
+
+        w += str[i];
+    }
 }

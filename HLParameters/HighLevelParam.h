@@ -19,6 +19,9 @@ public:
     explicit HighLevelParam(QWidget *parent = 0);
     ~HighLevelParam();
 
+    void loadConfig(const std::string& add);
+    void processLine(const char* str);
+
     bool commLessFlag = false;
     bool fixPlanFlag  = false;
 
@@ -30,7 +33,10 @@ public:
     QSpinBox    *KickOffX;
     QSpinBox    *KickOffY;
     QRadioButton*fix;
-    QLabel      *loadData;
+    QRadioButton *automat;
+    QRadioButton *toFreeSpace;
+    QRadioButton *dribbling;
+    QRadioButton *toTeamMate;
 
 private slots:
     void setEnableXandY();
