@@ -43,6 +43,14 @@ SetParameters::SetParameters(QWidget *parent) :
     loadButton->setShortcut(QApplication::translate("SetParameters", "Ctrl+L", 0));
     saveButton->setShortcut(QApplication::translate("SetParameters", "Ctrl+S", 0));
 
+    insertRowButton->setEnabled(false);
+    insertColumnButton->setEnabled(false);
+    removeRowButton->setEnabled(false);
+    removeColumnButton->setEnabled(false);
+    insertChildButton->setEnabled(false);
+    findButton->setEnabled(false);
+    saveButton->setEnabled(false);
+
     QStringList headers;
     headers << tr("Title") << tr("Description");
 
@@ -183,6 +191,25 @@ void SetParameters::loadFromFile()
     view->setModel(model);
     for (int column = 0; column < model->columnCount(); ++column)
         view->resizeColumnToContents(column);
+
+    if (fileName.toStdString() != "") {
+        insertRowButton->setEnabled(true);
+        insertColumnButton->setEnabled(true);
+        removeRowButton->setEnabled(true);
+        removeColumnButton->setEnabled(true);
+        insertChildButton->setEnabled(true);
+        findButton->setEnabled(true);
+        saveButton->setEnabled(true);
+    }
+    else {
+        insertRowButton->setEnabled(false);
+        insertColumnButton->setEnabled(false);
+        removeRowButton->setEnabled(false);
+        removeColumnButton->setEnabled(false);
+        insertChildButton->setEnabled(false);
+        findButton->setEnabled(false);
+        saveButton->setEnabled(false);
+    }
 }
 
 void SetParameters::saveToFile()

@@ -102,7 +102,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     SNAP_MAX(30),
-    adr(""),
+    adr("empty"),
     hasSaved(true)
 {
     ui->setupUi(this);
@@ -378,9 +378,9 @@ void MainWindow::saveConfig(const std::string& add)
     file << "# id, x, y, NumOfSupporter [, cx, cy] [:name]\n" << std::endl;
     for (std::vector<VoronoiParticle>::const_iterator p=particles.begin(); p<particles.end(); p++)
     {
-        file << p->id() << ", " << p->xraw()*2 << ", " << p->yraw()*2<<", "<<p->num();
+        file << p->id() << ", " << p->xraw()*20 << ", " << p->yraw()*20<<", "<<p->num();
         if (p->isMoved())
-            file << ", " << p->cxraw()*2 << ", " << p->cyraw()*2;
+            file << ", " << p->cxraw()*20 << ", " << p->cyraw()*20;
 
         if (p->_name != "")
             file << " :" << p->_name;
@@ -391,7 +391,10 @@ void MainWindow::saveConfig(const std::string& add)
 
 void MainWindow::on_simpleSave_clicked()
 {
-    saveConfig(adr);
+    if (adr != "empty")
+        saveConfig(adr);
+    else
+        on_save_clicked();
 }
 
 void MainWindow::loadConfig(const std::string& add)
@@ -515,10 +518,10 @@ void MainWindow::loadConfig(const std::string& add)
         if (!cfgReader.isOk) continue;
 
         VoronoiParticle p = VoronoiParticle(0, 0, "");
-        p._x = cfgReader.x/2;
-        p._y = cfgReader.y/2;
-        p._cx = cfgReader.cx/2;
-        p._cy = cfgReader.cy/2;
+        p._x = cfgReader.x/20;
+        p._y = cfgReader.y/20;
+        p._cx = cfgReader.cx/20;
+        p._cy = cfgReader.cy/20;
         p._id = cfgReader.id;
         p._NumOfSup = cfgReader.num;
         p._name = cfgReader.s;
@@ -551,6 +554,10 @@ void MainWindow::on_load_clicked()
 
     hasSaved = true;
     particles.clear();
+    for (int i=0; i<=VoronoiParticle::_aiID; i++)
+        ui->comboBox->removeItem(0);
+
+    VoronoiParticle::_aiID = 0;
 
     QString address = QFileDialog::getOpenFileName(this,
         tr("Formation"), "",
