@@ -148,10 +148,6 @@ void HighLevelParam::setEnableXandY()
 {
     fix_x->setEnabled(true);
     fix_y->setEnabled(true);
-    automat->setEnabled(false);
-    toFreeSpace->setEnabled(false);
-    dribbling->setEnabled(false);
-    toTeamMate->setEnabled(false);
 
 }
 
@@ -172,6 +168,7 @@ void HighLevelParam::chaneFixPlanFlag(bool flag)
     if (flag == true) {
         fix_x->setEnabled(true);
         fix_y->setEnabled(true);
+        fix->toggle();
         automat->setEnabled(false);
         toFreeSpace->setEnabled(false);
         dribbling->setEnabled(false);
@@ -181,6 +178,7 @@ void HighLevelParam::chaneFixPlanFlag(bool flag)
     else {
         fix_x->setEnabled(false);
         fix_y->setEnabled(false);
+        automat->toggle();
         automat->setEnabled(true);
         toFreeSpace->setEnabled(true);
         dribbling->setEnabled(true);
@@ -292,6 +290,7 @@ void HighLevelParam::processLine(const char* str)
                 fixPlan->setChecked(false);
             else {
                 fixPlan->setChecked(true);
+                fix->toggle();
                 fix_x->setEnabled(true);
                 fix_y->setEnabled(true);
                 automat->setEnabled(false);
@@ -326,9 +325,6 @@ void HighLevelParam::processLine(const char* str)
             w = "";
             s = "";
         }
-
-
-        std::cout<<w.toStdString()<<"  "<<s.toStdString()<<std::endl;
 
         if (str[i] == ';')
             i = i+2;

@@ -552,7 +552,7 @@ void MainWindow::on_load_clicked()
     hasSaved = true;
     particles.clear();
 
-    QString address = QFileDialog::getSaveFileName(this,
+    QString address = QFileDialog::getOpenFileName(this,
         tr("Formation"), "",
         tr("Config-File *.cfg(*.cfg);;All Files (*)"));
 
