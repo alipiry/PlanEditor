@@ -116,9 +116,10 @@ private slots:
     void on_mirrorX_clicked();
     void on_mirrorY_clicked();
     void on_load_clicked();
-    void on_treeView_doubleClicked(const QModelIndex &index);
     void on_simpleSave_clicked();
     void on_comboBox_currentIndexChanged(int index);
+    void on_listView_doubleClicked(const QModelIndex &index);
+    void on_createNew_clicked();
 };
 
 #endif // MAINWINDOW_H

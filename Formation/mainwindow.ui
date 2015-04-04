@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>880</width>
+    <width>1175</width>
     <height>768</height>
    </rect>
   </property>
@@ -14,23 +14,13 @@
    <string>HighLevel Behavior Grid Master! :p</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QTreeView" name="treeView">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>440</y>
-      <width>541</width>
-      <height>321</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>10</y>
-      <width>148</width>
-      <height>739</height>
+      <x>910</x>
+      <y>0</y>
+      <width>141</width>
+      <height>471</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -137,55 +127,6 @@
       <widget class="QSpinBox" name="NumOfSup"/>
      </item>
      <item>
-      <widget class="QPushButton" name="update">
-       <property name="text">
-        <string>Up&amp;date</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="simpleSave">
-       <property name="text">
-        <string>&amp;Save</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="save">
-       <property name="text">
-        <string>&amp;Save As ...</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="load">
-       <property name="text">
-        <string>&amp;Load</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="clear">
-       <property name="text">
-        <string>&amp;Clear</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mirrorX">
-       <property name="text">
-        <string>Mirror-&amp;X</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mirrorY">
-       <property name="text">
-        <string>Mirror-&amp;Y</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <spacer name="verticalSpacer">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -229,10 +170,10 @@
    <widget class="QWidget" name="layoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>770</x>
-      <y>10</y>
-      <width>87</width>
-      <height>60</height>
+      <x>1060</x>
+      <y>0</y>
+      <width>111</width>
+      <height>362</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -246,7 +187,86 @@
      <item>
       <widget class="QComboBox" name="comboBox"/>
      </item>
+     <item>
+      <spacer name="verticalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="createNew">
+       <property name="text">
+        <string>Create &amp;New</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="update">
+       <property name="text">
+        <string>Up&amp;date</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="save">
+       <property name="text">
+        <string>&amp;Save As ...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="simpleSave">
+       <property name="text">
+        <string>&amp;Save</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="load">
+       <property name="text">
+        <string>&amp;Load</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mirrorX">
+       <property name="text">
+        <string>Mirror-&amp;X</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mirrorY">
+       <property name="text">
+        <string>Mirror-&amp;Y</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="clear">
+       <property name="text">
+        <string>&amp;Clear</string>
+       </property>
+      </widget>
+     </item>
     </layout>
+   </widget>
+   <widget class="QListView" name="listView">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>10</y>
+      <width>311</width>
+      <height>461</height>
+     </rect>
+    </property>
    </widget>
   </widget>
  </widget>

@@ -108,20 +108,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     setMouseTracking(true);
 
-    dirModel = new QFileSystemModel(this);
-    dirModel->setRootPath("/home/s");
-
+    dirModel = new QFileSystemModel;
+    dirModel->setRootPath("../");
     QStringList filters;
-    filters << "*.txt" << "*.cfg";
+    filters << "*.cfg";
     dirModel->setNameFilters(filters);
-
-    dirModel->setNameFilters(filters);
-    dirModel->setNameFilterDisables(false);
-
-    ui->treeView->setModel(dirModel);
-    ui->treeView->setAnimated(false);
-    ui->treeView->setIndentation(20);
-    ui->treeView->setSortingEnabled(true);
+    dirModel->setNameFilterDisables(true);
+    ui->listView->setModel(dirModel);
+    ui->listView->setRootIndex(dirModel->index(QDir::currentPath()));
 
     monitor = new Monitor(ui->centralWidget);
     monitor->setObjectName(QString::fromUtf8("monitor"));
@@ -661,7 +655,22 @@ void MainWindow::on_update_clicked()
     refreshUI();
 }
 
-void MainWindow::on_treeView_doubleClicked(const QModelIndex &index)
+void MainWindow::on_comboBox_currentIndexChanged(int index)
+{
+    if ((unsigned)index >= particles.size()) return;
+
+    const VoronoiParticle& p = particles[index];
+    ui->b_id->setValue(index);
+    ui->b_x->setValue(p.xraw()*2);
+    ui->b_y->setValue(p.yraw()*2);
+    ui->b_cx->setValue(p.cxraw()*2);
+    ui->b_cy->setValue(p.cyraw()*2);
+    ui->b_name->setText(QString::fromStdString(p._name));
+    ui->NumOfSup->setValue(p.num());
+    ui->b_par->setValue(p.id()+1);
+}
+
+void MainWindow::on_listView_doubleClicked(const QModelIndex &index)
 {
     QString strPath = dirModel->fileInfo(index).absoluteFilePath();
     if (!strPath.endsWith(".cfg")) return;
@@ -677,6 +686,8 @@ void MainWindow::on_treeView_doubleClicked(const QModelIndex &index)
     for (int i=0; i<=VoronoiParticle::_aiID; i++)
         ui->comboBox->removeItem(0);
 
+    VoronoiParticle::_aiID = 0;
+
     std::cout << "Loading file from " << strPath.toStdString() << std::endl;
     adr = strPath.toStdString();
     loadConfig(strPath.toStdString());
@@ -684,19 +695,21 @@ void MainWindow::on_treeView_doubleClicked(const QModelIndex &index)
     drawField();
     drawParticles();
     refreshUI();
+    drawParticles();
 }
 
-void MainWindow::on_comboBox_currentIndexChanged(int index)
+void MainWindow::on_createNew_clicked()
 {
-    if ((unsigned)index >= particles.size()) return;
+    hasSaved = true;
+    particles.clear();
 
-    const VoronoiParticle& p = particles[index];
-    ui->b_id->setValue(index);
-    ui->b_x->setValue(p.xraw()*2);
-    ui->b_y->setValue(p.yraw()*2);
-    ui->b_cx->setValue(p.cxraw()*2);
-    ui->b_cy->setValue(p.cyraw()*2);
-    ui->b_name->setText(QString::fromStdString(p._name));
-    ui->NumOfSup->setValue(p.num());
-    ui->b_par->setValue(p.id());
+    for (int i=0; i<=VoronoiParticle::_aiID; i++)
+        ui->comboBox->removeItem(0);
+
+    VoronoiParticle::_aiID = 0;
+    adr = "empty";
+
+    drawField();
+    drawParticles();
+    refreshUI();
 }

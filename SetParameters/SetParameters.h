@@ -25,6 +25,7 @@ public:
 
     ParametersTreeModel *model;
 
+    bool goToSave;
     QPushButton *insertRowButton;
     QPushButton *insertColumnButton;
     QPushButton *removeRowButton;
@@ -47,6 +48,7 @@ private slots:
     void loadFromFile();
     void saveToFile();
     void findClicked();
+    void updateActions();
 
 };
 

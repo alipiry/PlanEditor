@@ -5,6 +5,7 @@
 #include <QPushButton>
 #include <QGroupBox>
 #include <QCheckBox>
+#include <QTextEdit>
 #include <QSpinBox>
 #include <QWidget>
 #include <QLabel>
@@ -26,6 +27,7 @@ public:
     bool fixPlanFlag  = false;
 
     QPushButton *Apply;
+    QTextEdit   *text;
     QCheckBox   *fixPlan;
     QCheckBox   *commLess;
     QSpinBox    *numOfPlayers;

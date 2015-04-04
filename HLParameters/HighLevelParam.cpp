@@ -9,6 +9,7 @@
 #include <QCheckBox>
 #include <QSpinBox>
 #include <iostream>
+#include <QTextEdit>
 #include <fstream>
 #include <QtGui>
 #include <QMenu>
@@ -17,9 +18,26 @@
 HighLevelParam::HighLevelParam(QWidget *parent)
     : QWidget(parent)
 {
+    Apply = new QPushButton(tr("&Apply"));
+    Apply->setShortcut(QApplication::translate("SetParameters", "Ctrl+A", 0));
+    Apply->setFixedHeight(40);
+    Apply->setFixedWidth(200);
+
+    text = new QTextEdit;
+    text->setFixedHeight(250);
+    text->setFixedWidth(500);
+
+    QHBoxLayout *vb = new QHBoxLayout;
+    vb->addStretch(1);
+    vb->addWidget(Apply);
+    vb->addStretch(1);
+
     QGridLayout *grid = new QGridLayout;
     grid->addWidget(createHLParametersGroup(), 0, 0);
     grid->addWidget(createKickOffGroup(), 0, 1);
+    grid->addWidget(text, 1, 0);
+    grid->addWidget(Apply, 2, 2);
+//    grid->addWidget(appLabel, 2, 1);
     setLayout(grid);
 
     QString address = "../behaviorHLParameters.cfg";
@@ -65,9 +83,6 @@ QGroupBox *HighLevelParam::createHLParametersGroup()
     hbox1->addWidget(end);
     hbox1->addStretch(1);
 
-    Apply = new QPushButton(tr("&Apply"));
-    Apply->setShortcut(QApplication::translate("SetParameters", "Ctrl+A", 0));
-
     QHBoxLayout *vbox1 = new QHBoxLayout;
     vbox1->addWidget(numOfPlayersLabel);
     vbox1->addWidget(numOfPlayers);
@@ -84,9 +99,10 @@ QGroupBox *HighLevelParam::createHLParametersGroup()
     vbox->addLayout(vbox1);
     vbox->addLayout(vbox2);
     vbox->addLayout(hbox1);
-    vbox->addWidget(Apply);
     vbox->addStretch(1);
     HighLevelParameters->setLayout(vbox);
+
+    HighLevelParameters->setFixedHeight(500);
 
     connect(fixPlan, SIGNAL(clicked(bool)), this, SLOT(chaneFixPlanFlag(bool)));
     connect(commLess, SIGNAL(clicked(bool)), this, SLOT(chaneCommLessFlag(bool)));
@@ -106,7 +122,7 @@ QGroupBox *HighLevelParam::createKickOffGroup()
     toTeamMate  = new QRadioButton(tr("to TeamMate"));
     fix                       = new QRadioButton(tr("Fix    :  "));
     QLabel       *X_label     = new QLabel(tr("X : "));
-    QLabel       *Y_label     = new QLabel(tr("Y : "));
+    QLabel       *Y_label     = new QLabel(tr("  Y : "));
 
     fix_x = new QSpinBox;
     fix_y = new QSpinBox;
@@ -133,6 +149,8 @@ QGroupBox *HighLevelParam::createKickOffGroup()
     vbox->addLayout(vbox3);
     vbox->addStretch(1);
     kickOff->setLayout(vbox);
+
+    kickOff->setFixedHeight(600);
 
     connect(fix, SIGNAL(clicked()), this, SLOT(setEnableXandY()));
     connect(automat, SIGNAL(clicked()), this, SLOT(setDisableXandY()));
@@ -231,10 +249,15 @@ void HighLevelParam::loadConfig(const std::string& add)
     std::ifstream file(add.c_str(), std::ios::in);
     if (!file) { std::cerr << "File not found..." << std::endl; return; }
 
+    QString setText = "";
     char sz[255];
+
     while (!file.eof())
     {
         file.getline(sz, 255);
+        setText += sz;
+        setText += '\n';
+        text->setText(setText);
         processLine(sz);
     }
 }

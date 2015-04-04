@@ -10,7 +10,8 @@
 #include <QLineEdit>
 
 SetParameters::SetParameters(QWidget *parent) :
-    QWidget(parent)
+    QWidget(parent),
+    goToSave(false)
 {
 
 #ifdef Q_WS_MAEMO_5
@@ -158,6 +159,8 @@ bool SetParameters::removeColumn(const QModelIndex &parent)
     // Insert columns in each child of the parent item.
     bool changed = model->removeColumn(column, parent);
 
+    updateActions();
+
     return changed;
 }
 
@@ -165,6 +168,24 @@ void SetParameters::removeRow()
 {
     QModelIndex index = view->selectionModel()->currentIndex();
     QAbstractItemModel *model = view->model();
+    if (model->removeRow(index.row(), index.parent()))
+        updateActions();
+}
+
+void SetParameters::updateActions()
+{
+    bool hasSelection = !view->selectionModel()->selection().isEmpty();
+
+    if (hasSelection)
+        goToSave = true;
+
+    bool hasCurrent = view->selectionModel()->currentIndex().isValid();
+
+    if (hasCurrent)
+        goToSave = false;
+
+    if (hasCurrent)
+        view->closePersistentEditor(view->selectionModel()->currentIndex());
 }
 
 void SetParameters::findClicked()
@@ -200,6 +221,7 @@ void SetParameters::loadFromFile()
         insertChildButton->setEnabled(true);
         findButton->setEnabled(true);
         saveButton->setEnabled(true);
+        goToSave = true;
     }
     else {
         insertRowButton->setEnabled(false);
@@ -214,9 +236,11 @@ void SetParameters::loadFromFile()
 
 void SetParameters::saveToFile()
 {
+    if (goToSave) {
     QString fileName = QFileDialog::getSaveFileName(this,
         tr("SetParameters"), "",
         tr("Config-File *.cfg(*.cfg);;All Files (*)"));
 
     model->Save(fileName);
+    }
 }
