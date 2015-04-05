@@ -16,7 +16,10 @@
 #include <QLabel>
 
 HighLevelParam::HighLevelParam(QWidget *parent)
-    : QWidget(parent)
+    : QWidget(parent),
+      commLessFlag(false),
+      fixPlanFlag(false),
+      kickOffFlag(0)
 {
     Apply = new QPushButton(tr("&Apply"));
     Apply->setShortcut(QApplication::translate("SetParameters", "Ctrl+A", 0));
@@ -24,8 +27,8 @@ HighLevelParam::HighLevelParam(QWidget *parent)
     Apply->setFixedWidth(200);
 
     text = new QTextEdit;
-    text->setFixedHeight(250);
-    text->setFixedWidth(500);
+    text->setFixedHeight(450);
+    text->setFixedWidth(560);
 
     QHBoxLayout *vb = new QHBoxLayout;
     vb->addStretch(1);
@@ -34,10 +37,9 @@ HighLevelParam::HighLevelParam(QWidget *parent)
 
     QGridLayout *grid = new QGridLayout;
     grid->addWidget(createHLParametersGroup(), 0, 0);
-    grid->addWidget(createKickOffGroup(), 0, 1);
-    grid->addWidget(text, 1, 0);
+    grid->addWidget(createKickOffGroup(), 1, 0);
+    grid->addWidget(text, 0, 1);
     grid->addWidget(Apply, 2, 2);
-//    grid->addWidget(appLabel, 2, 1);
     setLayout(grid);
 
     QString address = "../behaviorHLParameters.cfg";
@@ -67,22 +69,6 @@ QGroupBox *HighLevelParam::createHLParametersGroup()
     QLabel *formationVersionLabel = new QLabel(tr("Formation Version   : "));
     formationVersion = new QSpinBox;
 
-    QLabel *kickOffTarget = new QLabel(tr("Kick-Off Target : { "));
-    QLabel *KickOff_X     = new QLabel(tr(" X : "));
-    KickOffX              = new QSpinBox;
-    QLabel *KickOff_Y     = new QLabel(tr("  Y : "));
-    KickOffY              = new QSpinBox;
-    QLabel *end     = new QLabel(tr("  }"));
-
-    QHBoxLayout *hbox1 = new QHBoxLayout;
-    hbox1->addWidget(kickOffTarget);
-    hbox1->addWidget(KickOff_X);
-    hbox1->addWidget(KickOffX);
-    hbox1->addWidget(KickOff_Y);
-    hbox1->addWidget(KickOffY);
-    hbox1->addWidget(end);
-    hbox1->addStretch(1);
-
     QHBoxLayout *vbox1 = new QHBoxLayout;
     vbox1->addWidget(numOfPlayersLabel);
     vbox1->addWidget(numOfPlayers);
@@ -98,7 +84,6 @@ QGroupBox *HighLevelParam::createHLParametersGroup()
     vbox->addWidget(commLess);
     vbox->addLayout(vbox1);
     vbox->addLayout(vbox2);
-    vbox->addLayout(hbox1);
     vbox->addStretch(1);
     HighLevelParameters->setLayout(vbox);
 
@@ -125,9 +110,14 @@ QGroupBox *HighLevelParam::createKickOffGroup()
     QLabel       *Y_label     = new QLabel(tr("  Y : "));
 
     fix_x = new QSpinBox;
+    fix_x->setMaximum(9999);
+    fix_x->setMinimum(0);
     fix_y = new QSpinBox;
+    fix_y->setMaximum(9999);
+    fix_y->setMinimum(0);
     fix_x->setEnabled(false);
     fix_y->setEnabled(false);
+
 
     QHBoxLayout *hbox = new QHBoxLayout;
     hbox->addStretch(1);
@@ -152,25 +142,60 @@ QGroupBox *HighLevelParam::createKickOffGroup()
 
     kickOff->setFixedHeight(600);
 
-    connect(fix, SIGNAL(clicked()), this, SLOT(setEnableXandY()));
-    connect(automat, SIGNAL(clicked()), this, SLOT(setDisableXandY()));
-    connect(toFreeSpace, SIGNAL(clicked()), this, SLOT(setDisableXandY()));
-    connect(dribbling, SIGNAL(clicked()), this, SLOT(setDisableXandY()));
-    connect(toTeamMate, SIGNAL(clicked()), this, SLOT(setDisableXandY()));
+    connect(fix, SIGNAL(clicked()), this, SLOT(setFix()));
+    connect(automat, SIGNAL(clicked()), this, SLOT(setAutomat()));
+    connect(toFreeSpace, SIGNAL(clicked()), this, SLOT(setToFreeSpace()));
+    connect(dribbling, SIGNAL(clicked()), this, SLOT(setDribbling()));
+    connect(toTeamMate, SIGNAL(clicked()), this, SLOT(setToTeamMate()));
     connect(Apply, SIGNAL(clicked()), this, SLOT(applyChanges()));
 
     return kickOff;
 }
 
-void HighLevelParam::setEnableXandY()
+void HighLevelParam::setFix()
 {
+    kickOffFlag = 5;
     fix_x->setEnabled(true);
     fix_y->setEnabled(true);
 
 }
 
-void HighLevelParam::setDisableXandY()
+void HighLevelParam::setAutomat()
 {
+    kickOffFlag = 0;
+    fix_x->setEnabled(false);
+    fix_y->setEnabled(false);
+    automat->setEnabled(true);
+    toFreeSpace->setEnabled(true);
+    dribbling->setEnabled(true);
+    toTeamMate->setEnabled(true);
+}
+
+void HighLevelParam::setToFreeSpace()
+{
+    kickOffFlag = 1;
+    fix_x->setEnabled(false);
+    fix_y->setEnabled(false);
+    automat->setEnabled(true);
+    toFreeSpace->setEnabled(true);
+    dribbling->setEnabled(true);
+    toTeamMate->setEnabled(true);
+}
+
+void HighLevelParam::setDribbling()
+{
+    kickOffFlag = 2;
+    fix_x->setEnabled(false);
+    fix_y->setEnabled(false);
+    automat->setEnabled(true);
+    toFreeSpace->setEnabled(true);
+    dribbling->setEnabled(true);
+    toTeamMate->setEnabled(true);
+}
+
+void HighLevelParam::setToTeamMate()
+{
+    kickOffFlag = 3;
     fix_x->setEnabled(false);
     fix_y->setEnabled(false);
     automat->setEnabled(true);
@@ -187,6 +212,7 @@ void HighLevelParam::chaneFixPlanFlag(bool flag)
         fix_x->setEnabled(true);
         fix_y->setEnabled(true);
         fix->toggle();
+        setFix();
         automat->setEnabled(false);
         toFreeSpace->setEnabled(false);
         dribbling->setEnabled(false);
@@ -197,6 +223,7 @@ void HighLevelParam::chaneFixPlanFlag(bool flag)
         fix_x->setEnabled(false);
         fix_y->setEnabled(false);
         automat->toggle();
+        setAutomat();
         automat->setEnabled(true);
         toFreeSpace->setEnabled(true);
         dribbling->setEnabled(true);
@@ -234,14 +261,16 @@ void HighLevelParam::applyChanges()
     file << "/**" << std::endl
          << " *  Parameters for strategy/planning of the game." << std::endl
          << " *  High Level Behavior 2015" << std::endl
-         << " */" << std::endl << std::endl << "fixPlan = " << strFix <<";"
+         << " */" << std::endl << std::endl << "FixPlan = {" << std::endl
+         << "  fix = "<<strFix <<";"
          << "           // a fix planning/strategy is set on robots based on following parameters"<< std::endl
-         << "commless = " << strComm <<";" << "          // state of the communication"<< std::endl
-         << "numOfPlayers = " << numOfPlayers->value() << ";"<< "          // number of players to coordinate minus the goalkeeper"
+         << "  commless = " << strComm <<";" << "          // state of the communication"<< std::endl
+         << "  numOfPlayers = " << numOfPlayers->value() << ";"<< "          // number of players to coordinate minus the goalkeeper"
          << std::endl
-         << "formationVersion = " << formationVersion->value() <<";"<< "      // version of the formation" << std::endl
-         << std::endl << "kickTarget = {" <<std::endl << "  x = " << KickOffX->value()
-         << "; y = "<< KickOffY->value() <<";" << std::endl << "};";
+         << "  formationVersion = " << formationVersion->value() <<";"<< "      // version of the formation" << std::endl
+         << "};" << std::endl << std::endl << "KickOff = {" <<std::endl << "  kickOffType = "<<kickOffFlag <<";" <<std::endl
+         << "  kickOffFixTarget = {x = " << fix_x->value()
+         << "; y = "<< fix_y->value() <<";};" << std::endl<<"};";
 }
 
 void HighLevelParam::loadConfig(const std::string& add)
@@ -281,10 +310,10 @@ void HighLevelParam::processLine(const char* str)
         if (str[i] == '\0')
             break;
 
-        if (str[i] == ' ')
+        if (str[i] == ' ' || str[i] == '\t')
             continue;
 
-        if (str[i] == '}' || str[i] == ';')
+        if (str[i] == '}' || str[i] == ';' || str[i] == '{')
             i++;
 
         if (str[i] == '=' && str[i+2] != '{')
@@ -301,13 +330,16 @@ void HighLevelParam::processLine(const char* str)
 
         if (isValue)
         {
+            if (str[i] == '{')
+                break;
+
             for (i; str[i] != ';'; i++)
                 s += str[i];
 
             isValue = false;
         }
 
-        if (w == "fixPlan")
+        if (w == "fix")
         {
             if (s == "false")
                 fixPlan->setChecked(false);
@@ -331,20 +363,53 @@ void HighLevelParam::processLine(const char* str)
                 commLess->setChecked(true);
         }
 
+        if (w == "kickOffType")
+            switch (s.toInt()) {
+            case 0:
+                automat->setEnabled(true);
+                automat->toggle();
+                break;
+            case 1:
+                toFreeSpace->setEnabled(true);
+                toFreeSpace->toggle();
+                break;
+            case 2:
+                dribbling->setEnabled(true);
+                dribbling->toggle();
+                break;
+            case 3:
+                toTeamMate->setEnabled(true);
+                toTeamMate->toggle();
+                break;
+            case 4:
+                fix->setEnabled(true);
+                fix->toggle();
+                break;
+            default:
+                break;
+            }
+
         if (w == "numOfPlayers")
             numOfPlayers->setValue(s.toInt());
 
         if (w == "formationVersion")
             formationVersion->setValue(s.toInt());
 
-        if (w == "x") {
-            KickOffX->setValue(s.toInt());
+        if (w == "kickOffFixTarget")
+            w = "";
+
+//        std::cout<<s.toStdString()<<std::endl;
+        std::cout<<w.toStdString()<<std::endl;
+
+
+        if (w == "=x") {
+            fix_x->setValue(s.toInt());
             w = "";
             s = "";
         }
 
         if (w == "y") {
-            KickOffY->setValue(s.toInt());
+            fix_y->setValue(s.toInt());
             w = "";
             s = "";
         }

@@ -23,8 +23,9 @@ public:
     void loadConfig(const std::string& add);
     void processLine(const char* str);
 
-    bool commLessFlag = false;
-    bool fixPlanFlag  = false;
+    bool commLessFlag;
+    bool fixPlanFlag;
+    int  kickOffFlag;
 
     QPushButton *Apply;
     QTextEdit   *text;
@@ -32,8 +33,6 @@ public:
     QCheckBox   *commLess;
     QSpinBox    *numOfPlayers;
     QSpinBox    *formationVersion;
-    QSpinBox    *KickOffX;
-    QSpinBox    *KickOffY;
     QRadioButton*fix;
     QRadioButton *automat;
     QRadioButton *toFreeSpace;
@@ -41,8 +40,11 @@ public:
     QRadioButton *toTeamMate;
 
 private slots:
-    void setEnableXandY();
-    void setDisableXandY();
+    void setFix();
+    void setAutomat();
+    void setToFreeSpace();
+    void setDribbling();
+    void setToTeamMate();
     void applyChanges();
     void chaneFixPlanFlag(bool);
     void chaneCommLessFlag(bool);
