@@ -109,11 +109,11 @@ MainWindow::MainWindow(QWidget *parent) :
     setMouseTracking(true);
 
     dirModel = new QFileSystemModel;
-    dirModel->setRootPath("../");
+    dirModel->setRootPath("~/");
     QStringList filters;
     filters << "*.cfg";
     dirModel->setNameFilters(filters);
-    dirModel->setNameFilterDisables(true);
+    dirModel->setNameFilterDisables(false);
     ui->listView->setModel(dirModel);
     ui->listView->setRootIndex(dirModel->index(QDir::currentPath()));
 

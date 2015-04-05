@@ -271,6 +271,8 @@ void HighLevelParam::applyChanges()
          << "};" << std::endl << std::endl << "KickOff = {" <<std::endl << "  kickOffType = "<<kickOffFlag <<";" <<std::endl
          << "  kickOffFixTarget = {x = " << fix_x->value()
          << "; y = "<< fix_y->value() <<";};" << std::endl<<"};";
+
+    loadConfig(address.toStdString());
 }
 
 void HighLevelParam::loadConfig(const std::string& add)
