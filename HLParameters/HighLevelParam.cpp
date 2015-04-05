@@ -154,7 +154,7 @@ QGroupBox *HighLevelParam::createKickOffGroup()
 
 void HighLevelParam::setFix()
 {
-    kickOffFlag = 5;
+    kickOffFlag = 4;
     fix_x->setEnabled(true);
     fix_y->setEnabled(true);
 
@@ -397,10 +397,6 @@ void HighLevelParam::processLine(const char* str)
 
         if (w == "kickOffFixTarget")
             w = "";
-
-//        std::cout<<s.toStdString()<<std::endl;
-        std::cout<<w.toStdString()<<std::endl;
-
 
         if (w == "=x") {
             fix_x->setValue(s.toInt());
