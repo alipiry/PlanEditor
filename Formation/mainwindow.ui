@@ -6,26 +6,49 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1175</width>
-    <height>768</height>
+    <width>1177</width>
+    <height>820</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>HighLevel Behavior Grid Master! :p</string>
   </property>
   <widget class="QWidget" name="centralWidget">
+   <widget class="QLabel" name="label_8">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>410</y>
+      <width>81</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Cordinate :</string>
+    </property>
+   </widget>
+   <widget class="QListView" name="listView">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>10</y>
+      <width>311</width>
+      <height>461</height>
+     </rect>
+    </property>
+   </widget>
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>910</x>
+      <x>900</x>
       <y>0</y>
       <width>141</width>
       <height>461</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
+    <layout class="QVBoxLayout" name="verticalLayout_5">
      <item>
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="label_5">
        <property name="text">
         <string>ID :</string>
        </property>
@@ -39,7 +62,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="label_2">
+      <widget class="QLabel" name="label_10">
        <property name="text">
         <string>Position :</string>
        </property>
@@ -66,7 +89,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="label_3">
+      <widget class="QLabel" name="label_17">
        <property name="text">
         <string>Center :</string>
        </property>
@@ -93,7 +116,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="label_4">
+      <widget class="QLabel" name="label_19">
        <property name="text">
         <string>Parent :</string>
        </property>
@@ -107,7 +130,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="label_6">
+      <widget class="QLabel" name="label_20">
        <property name="text">
         <string>Name :</string>
        </property>
@@ -117,7 +140,7 @@
       <widget class="QLineEdit" name="b_name"/>
      </item>
      <item>
-      <widget class="QLabel" name="label_7">
+      <widget class="QLabel" name="label_21">
        <property name="text">
         <string>Num of Supporter :</string>
        </property>
@@ -128,10 +151,10 @@
      </item>
     </layout>
    </widget>
-   <widget class="QLabel" name="label_5">
+   <widget class="QLabel" name="label_6">
     <property name="geometry">
      <rect>
-      <x>445</x>
+      <x>435</x>
       <y>410</y>
       <width>111</width>
       <height>31</height>
@@ -141,31 +164,18 @@
      <string/>
     </property>
    </widget>
-   <widget class="QLabel" name="label_8">
-    <property name="geometry">
-     <rect>
-      <x>330</x>
-      <y>410</y>
-      <width>81</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Cordinate :</string>
-    </property>
-   </widget>
    <widget class="QWidget" name="layoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>1060</x>
+      <x>1050</x>
       <y>0</y>
       <width>111</width>
       <height>461</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout_2">
+    <layout class="QVBoxLayout" name="verticalLayout_6">
      <item>
-      <widget class="QLabel" name="label_9">
+      <widget class="QLabel" name="label_23">
        <property name="text">
         <string>Select ID :</string>
        </property>
@@ -175,7 +185,7 @@
       <widget class="QComboBox" name="comboBox"/>
      </item>
      <item>
-      <spacer name="verticalSpacer_2">
+      <spacer name="verticalSpacer_26">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
@@ -188,7 +198,7 @@
       </spacer>
      </item>
      <item>
-      <spacer name="verticalSpacer_10">
+      <spacer name="verticalSpacer_27">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
@@ -201,7 +211,7 @@
       </spacer>
      </item>
      <item>
-      <spacer name="verticalSpacer_11">
+      <spacer name="verticalSpacer_28">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
@@ -214,7 +224,7 @@
       </spacer>
      </item>
      <item>
-      <spacer name="verticalSpacer_12">
+      <spacer name="verticalSpacer_29">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
@@ -227,7 +237,7 @@
       </spacer>
      </item>
      <item>
-      <spacer name="verticalSpacer_13">
+      <spacer name="verticalSpacer_30">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
@@ -247,7 +257,7 @@
       </widget>
      </item>
      <item>
-      <spacer name="verticalSpacer_3">
+      <spacer name="verticalSpacer_31">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
@@ -267,7 +277,7 @@
       </widget>
      </item>
      <item>
-      <spacer name="verticalSpacer_4">
+      <spacer name="verticalSpacer_32">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
@@ -287,7 +297,7 @@
       </widget>
      </item>
      <item>
-      <spacer name="verticalSpacer_5">
+      <spacer name="verticalSpacer_33">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
@@ -307,7 +317,7 @@
       </widget>
      </item>
      <item>
-      <spacer name="verticalSpacer_6">
+      <spacer name="verticalSpacer_34">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
@@ -327,7 +337,7 @@
       </widget>
      </item>
      <item>
-      <spacer name="verticalSpacer_7">
+      <spacer name="verticalSpacer_35">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
@@ -347,7 +357,7 @@
       </widget>
      </item>
      <item>
-      <spacer name="verticalSpacer_8">
+      <spacer name="verticalSpacer_36">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
@@ -367,7 +377,7 @@
       </widget>
      </item>
      <item>
-      <spacer name="verticalSpacer_9">
+      <spacer name="verticalSpacer_37">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
@@ -382,21 +392,11 @@
      <item>
       <widget class="QPushButton" name="clear">
        <property name="text">
-        <string>&amp;Clear</string>
+        <string>Clea&amp;r</string>
        </property>
       </widget>
      </item>
     </layout>
-   </widget>
-   <widget class="QListView" name="listView">
-    <property name="geometry">
-     <rect>
-      <x>590</x>
-      <y>10</y>
-      <width>311</width>
-      <height>461</height>
-     </rect>
-    </property>
    </widget>
   </widget>
  </widget>

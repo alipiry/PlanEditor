@@ -8,8 +8,18 @@
 #include <fstream>
 #include <cmath>
 
+#include <iostream>
+
 unsigned int VoronoiParticle::_aiID = 0;
 bool MouseClicked=false;
+
+#ifdef FAST_PERFORMANCE
+#  define FOR(iterator, initial, cond) \
+    for (int iterator=initial; cond; iterator+=2)
+#else
+#  define FOR(iterator, initial, cond) \
+    for (int iterator=0; cond; iterator++)
+#endif
 
 void Monitor::mousePressEvent(QMouseEvent *ev)
 {
@@ -35,21 +45,40 @@ void Monitor::mouseMoveEvent(QMouseEvent *ev)
     emit cordinatePointer(ev->x()*2, ev->y()*2);
 }
 
+//void Monitor::mousePressEvent(QMouseEvent *ev)
+//{
+//    if (ev->button() != Qt::LeftButton) return;
+
+//    sX = ev->x();
+//    sY = ev->y();
+//}
+
+//void Monitor::mouseReleaseEvent(QMouseEvent *ev)
+//{
+//    if (ev->button() != Qt::LeftButton) return;
+//    emit addParticle(sX, sY, ev->x(), ev->y());
+//}
+
+//void Monitor::mouseMoveEvent(QMouseEvent *ev)
+//{
+//    emit mMove(sX, sY, ev->x(), ev->y());
+//}
+
 void MainWindow::getMouseMove(int x1, int y1, int x2, int y2)
 {
     if (abs(x1-x2) < SNAP_MAX && abs(y1-y2) < SNAP_MAX) return;
 
     double theta = atan2(y2-y1 , x2-x1);
 
-    painter->setPen(QPen(Qt::black, 2));
-    painter->drawLine(x2 - cos(theta)*10, y2 - sin(theta)*10, x1 + cos(theta)*10, y1 + sin(theta)*10);
-    painter->drawLine(x2 - cos(theta)*10, y2 - sin(theta)*10, x2 - cos(theta+0.2)*30, y2 - sin(theta+0.2)*30);
-    painter->drawLine(x2 - cos(theta)*10, y2 - sin(theta)*10, x2 - cos(theta-0.2)*30, y2 - sin(theta-0.2)*30);
+    qpn->setPen(QPen(Qt::black, 2));
+    qpn->drawLine(x2 - cos(theta)*10, y2 - sin(theta)*10, x1 + cos(theta)*10, y1 + sin(theta)*10);
+    qpn->drawLine(x2 - cos(theta)*10, y2 - sin(theta)*10, x2 - cos(theta+0.2)*30, y2 - sin(theta+0.2)*30);
+    qpn->drawLine(x2 - cos(theta)*10, y2 - sin(theta)*10, x2 - cos(theta-0.2)*30, y2 - sin(theta-0.2)*30);
     refreshUI();
-    painter->setPen(QPen(Qt::darkGreen, 2));
-    painter->drawLine(x2 - cos(theta)*10, y2 - sin(theta)*10, x1 + cos(theta)*10, y1 + sin(theta)*10);
-    painter->drawLine(x2 - cos(theta)*10, y2 - sin(theta)*10, x2 - cos(theta+0.2)*30, y2 - sin(theta+0.2)*30);
-    painter->drawLine(x2 - cos(theta)*10, y2 - sin(theta)*10, x2 - cos(theta-0.2)*30, y2 - sin(theta-0.2)*30);
+    qpn->setPen(QPen(Qt::darkGreen, 2));
+    qpn->drawLine(x2 - cos(theta)*10, y2 - sin(theta)*10, x1 + cos(theta)*10, y1 + sin(theta)*10);
+    qpn->drawLine(x2 - cos(theta)*10, y2 - sin(theta)*10, x2 - cos(theta+0.2)*30, y2 - sin(theta+0.2)*30);
+    qpn->drawLine(x2 - cos(theta)*10, y2 - sin(theta)*10, x2 - cos(theta-0.2)*30, y2 - sin(theta-0.2)*30);
 }
 
 void MainWindow::getParticle(int x, int y, int cx, int cy)
@@ -76,6 +105,7 @@ void MainWindow::getParticle(int x, int y, int cx, int cy)
             addParticle(VoronoiParticle(x, y, p));
         else
             addParticle(VoronoiParticle(x, y, cx, cy));
+
     }
 
     drawField();
@@ -83,10 +113,17 @@ void MainWindow::getParticle(int x, int y, int cx, int cy)
     refreshUI();
 }
 
+void MainWindow::setLabel(int x, int y)
+{
+    x = x-550;
+    y = 400-y;
+
+    ui->label_6->setText(QString("%1, %2").arg(x).arg(y));
+}
+
 void MainWindow::addParticle(const VoronoiParticle& p)
 {
     ui->b_id->setValue(particles.size());
-    ui->comboBox->addItem(tr("Player %1").arg(particles.size()), particles.size());
     ui->b_x->setValue(p.xraw()*2);
     ui->b_y->setValue(p.yraw()*2);
     ui->b_cx->setValue(p.cxraw()*2);
@@ -102,7 +139,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     SNAP_MAX(30),
-    adr("empty"),
+    addr("empty"),
     hasSaved(true)
 {
     ui->setupUi(this);
@@ -124,11 +161,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(monitor, SIGNAL(addParticle(int,int,int,int)), this, SLOT(getParticle(int,int,int,int)));
     connect(monitor, SIGNAL(mMove(int,int,int,int)), this, SLOT(getMouseMove(int,int,int,int)));
     connect(monitor, SIGNAL(cordinatePointer(int,int)), this, SLOT(setLabel(int,int)));
-    connect(monitor, SIGNAL(drawLine(int,int)), this, SLOT(drawLineInMiddelField(int,int)));
 
-    image = new QImage(1100/2, 800/2, QImage::Format_RGB888);
-    painter = new QPainter(image);
+    qmg = new QImage(1100/2, 800/2, QImage::Format_RGB888);
+    qpn = new QPainter(qmg);
 
+    ui->createNew->setShortcut(QApplication::translate("SetParameters", "Ctrl+N", 0));
     ui->save->setShortcut(QApplication::translate("SetParameters", "Ctrl+Shift+S", 0));
     ui->simpleSave->setShortcut(QApplication::translate("SetParameters", "Ctrl+S", 0));
     ui->load->setShortcut(QApplication::translate("SetParameters", "Ctrl+L", 0));
@@ -137,26 +174,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->mirrorX->setShortcut(QApplication::translate("SetParameters", "Ctrl+X", 0));
     ui->mirrorY->setShortcut(QApplication::translate("SetParameters", "Ctrl+Y", 0));
 
-    ///       FixMe       ///
-//    QVBoxLayout *buttonLayout1 = new QVBoxLayout;
-//    buttonLayout1->addWidget(insertRowButton);
-//    buttonLayout1->addWidget(insertColumnButton);
-//    buttonLayout1->addWidget(removeRowButton);
-//    buttonLayout1->addWidget(removeColumnButton);
-//    buttonLayout1->addWidget(insertChildButton);
-//    buttonLayout1->addWidget(loadButton);
-//    buttonLayout1->addWidget(saveButton);
-//    buttonLayout1->addWidget(exitButton);
-//    buttonLayout1->addStretch();
-
-//    QGridLayout *mainLayout = new QGridLayout;
-//    mainLayout->addLayout(painter, 0, 0);
-//    mainLayout->addWidget(ui->treeView, 2, 0);
-//    mainLayout->addWidget(searchLine, 0, 1);
-//    mainLayout->addWidget(findButton, 0, 2);
-//    mainLayout->addLayout(buttonLayout1, 1, 2);
-
-//    setLayout(mainLayout);
 
     drawField();
     refreshUI();
@@ -164,61 +181,46 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete painter;
-    delete image;
+    delete qpn;
+    delete qmg;
     delete ui;
 }
 
 void MainWindow::drawField()
 {
     //-- Carpet
-    painter->setBrush(Qt::darkGreen);
-    painter->drawRect(0, 0, 1100/2, 800/2);
+    qpn->setBrush(Qt::darkGreen);
+    qpn->drawRect(0/2, 0/2, 1100/2, 800/2);
 
     //-- Goals
-    painter->setPen(Qt::yellow);
-    painter->setBrush(QBrush(Qt::yellow, Qt::Dense6Pattern));
-    painter->drawRect(50/2, 325/2, 50/2, 150/2);
-    painter->setBrush(QBrush(Qt::blue, Qt::Dense6Pattern));
-    painter->drawRect(1000/2, 325/2, 50/2, 150/2);
+    qpn->setPen(Qt::yellow);
+    qpn->setBrush(QBrush(Qt::yellow, Qt::Dense6Pattern));
+    qpn->drawRect(50/2, 325/2, 50/2, 150/2);
+    qpn->setBrush(QBrush(Qt::blue, Qt::Dense6Pattern));
+    qpn->drawRect(1000/2, 325/2, 50/2, 150/2);
 
     //-- Lines
-    painter->setBrush(Qt::NoBrush);
-    painter->setPen(QPen(Qt::white, 5/2));
-    painter->drawRect(100/2, 100/2, 900/2, 600/2);
-    painter->drawRect(100/2, 290/2, 60/2, 220/2); //-- Penalty Box
-    painter->drawRect(940/2, 290/2, 60/2, 220/2); //-- Penalty Box
-    painter->drawLine(550/2, 100/2, 550/2, 700/2); //-- Half Line
-    painter->drawEllipse(QPoint(550/2, 400/2), 75/2, 75/2); //-- Circle
-    painter->drawEllipse(QPoint(230/2, 400/2), 5/2, 5/2); //-- Cross
-    painter->drawEllipse(QPoint(870/2, 400/2), 5/2, 5/2); //-- Cross
+    qpn->setBrush(Qt::NoBrush);
+    qpn->setPen(QPen(Qt::white, 5/2));
+    qpn->drawRect(100/2, 100/2, 900/2, 600/2);
+    qpn->drawRect(100/2, 290/2, 60/2, 220/2); //-- Penalty Box
+    qpn->drawRect(940/2, 290/2, 60/2, 220/2); //-- Penalty Box
+    qpn->drawLine(550/2, 100/2, 550/2, 700/2); //-- Half Line
+    qpn->drawEllipse(QPoint(550/2, 400/2), 75/2, 75/2); //-- Circle
+    qpn->drawEllipse(QPoint(230/2, 400/2), 5/2, 5/2); //-- Cross
+    qpn->drawEllipse(QPoint(870/2, 400/2), 5/2, 5/2); //-- Cross
 
     //-- Self Goal Posts
-    painter->setBrush(Qt::yellow);
-    painter->setPen(Qt::yellow);
-    painter->drawEllipse(QPoint(100/2, 325/2), 5/2, 5/2);
-    painter->drawEllipse(QPoint(100/2, 475/2), 5/2, 5/2);
+    qpn->setBrush(Qt::yellow);
+    qpn->setPen(Qt::yellow);
+    qpn->drawEllipse(QPoint(100/2, 325/2), 5/2, 5/2);
+    qpn->drawEllipse(QPoint(100/2, 475/2), 5/2, 5/2);
 
     //-- Opp. Goal Posts
-    painter->setBrush(Qt::yellow);
-    painter->setPen(Qt::yellow);
-    painter->drawEllipse(QPoint(1000/2, 325/2), 5/2, 5/2);
-    painter->drawEllipse(QPoint(1000/2, 475/2), 5/2, 5/2);
-}
-
-void MainWindow::drawLineInMiddelField(int x, int y)
-{
-    painter->setBrush(Qt::black);
-    painter->setPen(Qt::black);
-    painter->drawEllipse(QPoint(x, y), x, y);
-}
-
-void MainWindow::setLabel(int x, int y)
-{
-    x = x-550;
-    y = 400-y;
-
-    ui->label_5->setText(QString("%1, %2").arg(x).arg(y));
+    qpn->setBrush(Qt::yellow);
+    qpn->setPen(Qt::yellow);
+    qpn->drawEllipse(QPoint(1000/2, 325/2), 5/2, 5/2);
+    qpn->drawEllipse(QPoint(1000/2, 475/2), 5/2, 5/2);
 }
 
 void MainWindow::drawParticles()
@@ -226,71 +228,75 @@ void MainWindow::drawParticles()
     if (!particles.size()) return;
 
     //-- Draw Centers
-    painter->setBrush(Qt::darkBlue);
-    painter->setPen(QPen(Qt::blue, 3));
+    qpn->setBrush(Qt::darkBlue);
+    qpn->setPen(QPen(Qt::blue, 3));
     for (std::vector<VoronoiParticle>::const_iterator p=particles.begin(); p<particles.end(); p++)
         if (p->isMoved())
-            painter->drawPoint(p->cx(), p->cy());
+            qpn->drawPoint(p->cx(), p->cy());
 
     //-- Draw Arrows
-    painter->setBrush(Qt::NoBrush);
-    painter->setPen(QPen(Qt::black, 2));
+    qpn->setBrush(Qt::NoBrush);
+    qpn->setPen(QPen(Qt::black, 2));
 
     for (std::vector<VoronoiParticle>::const_iterator p=particles.begin(); p<particles.end(); p++)
         if (p->isMoved())
         {
             double theta = atan2(p->cy()-p->y() , p->cx()-p->x());
 
-            painter->drawLine(p->cx() - cos(theta)*10, p->cy() - sin(theta)*10, p->x() + cos(theta)*10, p->y() + sin(theta)*10);
-            painter->drawLine(p->cx() - cos(theta)*10, p->cy() - sin(theta)*10, p->cx() - cos(theta+0.2)*30, p->cy() - sin(theta+0.2)*30);
-            painter->drawLine(p->cx() - cos(theta)*10, p->cy() - sin(theta)*10, p->cx() - cos(theta-0.2)*30, p->cy() - sin(theta-0.2)*30);
+            qpn->drawLine(p->cx() - cos(theta)*10, p->cy() - sin(theta)*10, p->x() + cos(theta)*10, p->y() + sin(theta)*10);
+            qpn->drawLine(p->cx() - cos(theta)*10, p->cy() - sin(theta)*10, p->cx() - cos(theta+0.2)*30, p->cy() - sin(theta+0.2)*30);
+            qpn->drawLine(p->cx() - cos(theta)*10, p->cy() - sin(theta)*10, p->cx() - cos(theta-0.2)*30, p->cy() - sin(theta-0.2)*30);
         }
 
     //-- Draw Particles
-    painter->setBrush(Qt::darkRed);
-    painter->setPen(QPen(Qt::red, 5));
+    qpn->setBrush(Qt::darkRed);
+    qpn->setPen(QPen(Qt::red, 5));
     for (std::vector<VoronoiParticle>::const_iterator p=particles.begin(); p<particles.end(); p++)
-        painter->drawPoint(p->x(), p->y());
+        qpn->drawPoint(p->x(), p->y());
 
     //-- Draw texts
-    painter->setBrush(Qt::NoBrush);
-    painter->setPen(QPen(Qt::black));
+    qpn->setBrush(Qt::NoBrush);
+    qpn->setPen(QPen(Qt::black));
     for (std::vector<VoronoiParticle>::const_iterator p=particles.begin(); p<particles.end(); p++)
         if (p->_name != "")
-            painter->drawText(p->x(), p->y()+15, QString::fromStdString(p->_name));
+            qpn->drawText(p->x(), p->y()+15, QString::fromStdString(p->_name));
 
     //-- Draw ID Numbers
-    painter->setBrush(Qt::NoBrush);
-    painter->setPen(QPen(Qt::black));
+    qpn->setBrush(Qt::NoBrush);
+    qpn->setPen(QPen(Qt::black));
     for (std::vector<VoronoiParticle>::const_iterator p=particles.begin(); p<particles.end(); p++)
-            painter->drawText(p->x()-15, p->y()+15, QString::fromStdString(tr("%1").arg(p->_id).toStdString()) + ".");
+            qpn->drawText(p->x()-15, p->y()+15, QString::fromStdString(tr("%1").arg(p->_id).toStdString()) + ".");
 
     //-- Draw Borders
-    painter->setPen(QPen(Qt::green, 1));
-    for (int x=0; x<image->width(); x++)
+    qpn->setPen(QPen(Qt::green, 1));
+    FOR (x, 0, x<qmg->width())
+//    for (int x=0; x<qmg->width(); x++)
     {
         unsigned int lastID = 0;
-        for (int y=0; y<image->height(); y++)
+        FOR (y, 0, y<qmg->height())
+//        for (int y=0; y<qmg->height(); y++)
         {
             unsigned int id = nearestID(x, y);
             if (lastID == id)
                 continue;
 
-            painter->drawPoint(x, y);
+            qpn->drawPoint(x, y);
             lastID = id;
         }
     }
 
-    for (int y=1; y<image->height(); y++)
+    FOR (y, 1, y<qmg->height()-2)
+//    for (int y=1; y<qmg->height(); y++)
     {
         unsigned int lastID = 0;
-        for (int x=1; x<image->width(); x++)
+        FOR (x, 1, x<qmg->width()-2)
+//        for (int x=1; x<qmg->width(); x++)
         {
             unsigned int id = nearestID(x, y);
             if (lastID == id)
                 continue;
 
-            painter->drawPoint(x, y);
+            qpn->drawPoint(x, y);
             lastID = id;
         }
     }
@@ -343,7 +349,7 @@ unsigned int MainWindow::nearBy(int x, int y, float& d)
 
 void MainWindow::refreshUI()
 {
-    monitor->setPixmap(QPixmap::fromImage(*image));
+    monitor->setPixmap(QPixmap::fromImage(*qmg));
 }
 
 void MainWindow::on_b_id_editingFinished()
@@ -351,13 +357,104 @@ void MainWindow::on_b_id_editingFinished()
     if ((unsigned)ui->b_id->value() >= particles.size()) return;
 
     const VoronoiParticle& p = particles[ui->b_id->value()];
-    ui->b_x->setValue(p.xraw());
-    ui->b_y->setValue(p.yraw());
-    ui->b_cx->setValue(p.cxraw());
-    ui->b_cy->setValue(p.cyraw());
+    ui->b_x->setValue(p.xraw()*2);
+    ui->b_y->setValue(p.yraw()*2);
+    ui->b_cx->setValue(p.cxraw()*2);
+    ui->b_cy->setValue(p.cyraw()*2);
     ui->b_name->setText(QString::fromStdString(p._name));
     ui->NumOfSup->setValue(p.num());
     ui->b_par->setValue(p.id());
+}
+
+void MainWindow::on_update_clicked()
+{
+    if ((unsigned)ui->b_id->value() >= particles.size()) return;
+    VoronoiParticle& p = particles[ui->b_id->value()];
+
+    if ((unsigned)ui->b_par->value() < particles.size() && p.id() != (unsigned)ui->b_par->value())
+    {
+        p = VoronoiParticle(ui->b_x->value(), ui->b_y->value(), particles[ui->b_par->value()]);
+        ui->b_cx->setValue(p.cxraw());
+        ui->b_cy->setValue(p.cyraw());
+    }
+    else
+    {
+        p._x = ui->b_x->value()/2;
+        p._y = ui->b_y->value()/2;
+        p._cx = ui->b_cx->value()/2;
+        p._cy = ui->b_cy->value()/2;
+    }
+    p._name = ui->b_name->text().toStdString();
+    p._NumOfSup = ui->NumOfSup->value();
+
+    drawField();
+    drawParticles();
+    refreshUI();
+}
+
+void MainWindow::on_clear_clicked()
+{
+    if (!particles.size()) return;
+
+    if (QMessageBox::warning(this, "Warn", "Are you sure you want to clear all points?", QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes)
+    {
+        particles.clear();
+        drawField();
+        drawParticles();
+        refreshUI();
+
+        hasSaved = true;
+    }
+}
+
+void MainWindow::on_mirrorX_clicked()
+{
+    hasSaved = false;
+
+    const unsigned s = particles.size();
+    for (unsigned i=0; i<s; i++)
+    {
+        VoronoiParticle np = particles[i];
+        np._x *= -1;
+        np._cx *= -1;
+        np._name = (np._name=="")?"":(np._name+"_mx");
+        np._id += s;
+
+        particles.push_back(np);
+    }
+
+    drawField();
+    drawParticles();
+    refreshUI();
+}
+
+void MainWindow::on_mirrorY_clicked()
+{
+    hasSaved = false;
+
+    const unsigned s = particles.size();
+    for (unsigned i=0; i<s; i++)
+    {
+        VoronoiParticle np = particles[i];
+        np._y *= -1;
+        np._cy *= -1;
+        np._name = (np._name=="")?"":(np._name+"_my");
+        np._id += s;
+
+        particles.push_back(np);
+    }
+
+    drawField();
+    drawParticles();
+    refreshUI();
+}
+
+void MainWindow::on_simpleSave_clicked()
+{
+    if (addr != "empty")
+        saveConfig(addr);
+    else
+        on_save_clicked();
 }
 
 void MainWindow::saveConfig(const std::string& add)
@@ -369,26 +466,18 @@ void MainWindow::saveConfig(const std::string& add)
         return;
     }
 
-    file << "# id, x, y, NumOfSupporter [, cx, cy] [:name]\n" << std::endl;
+    file << "# region, x, y [, cx, cy] [:name]" << std::endl;
     for (std::vector<VoronoiParticle>::const_iterator p=particles.begin(); p<particles.end(); p++)
     {
-        file << p->id() << ", " << p->xraw()*20 << ", " << p->yraw()*20<<", "<<p->num();
+        file << p->id() << ", " << p->xraw()*20.f << ", " << p->yraw()*20.f<<", "<<p->num();
         if (p->isMoved())
-            file << ", " << p->cxraw()*20 << ", " << p->cyraw()*20;
+            file << ", " << p->cxraw()*20.f << ", " << p->cyraw()*20.f;
 
         if (p->_name != "")
             file << " :" << p->_name;
 
         file << std::endl;
     }
-}
-
-void MainWindow::on_simpleSave_clicked()
-{
-    if (adr != "empty")
-        saveConfig(adr);
-    else
-        on_save_clicked();
 }
 
 void MainWindow::loadConfig(const std::string& add)
@@ -431,7 +520,7 @@ void MainWindow::loadConfig(const std::string& add)
 
             isOk = false;
             s = "";
-            id = x = y = cx = cy = num =0;
+            id = x = y = cx = cy = num = 0;
             textMode = false;
 
             varCounter=0;
@@ -458,7 +547,7 @@ void MainWindow::loadConfig(const std::string& add)
 
                 if (c == ',') //-- Push An other
                 {
-                    if (varCounter < 6)
+                    if (varCounter < 5)
                         pushAValue(varCounter, neg?(-1*varValue):varValue);
                     varValue = 0;
                     varCounter++;
@@ -512,14 +601,13 @@ void MainWindow::loadConfig(const std::string& add)
         if (!cfgReader.isOk) continue;
 
         VoronoiParticle p = VoronoiParticle(0, 0, "");
-        p._x = cfgReader.x/20;
-        p._y = cfgReader.y/20;
-        p._cx = cfgReader.cx/20;
-        p._cy = cfgReader.cy/20;
+        p._x = cfgReader.x/20.f;
+        p._y = cfgReader.y/20.f;
+        p._cx = cfgReader.cx/20.f;
+        p._cy = cfgReader.cy/20.f;
         p._id = cfgReader.id;
         p._NumOfSup = cfgReader.num;
         p._name = cfgReader.s;
-        ui->comboBox->addItem(tr("Player %1").arg(cfgReader.id));
 
         std::cout << p.id() << ") " << p.xraw() << ", " << p.yraw() <<", "<<p.num()<< std::endl;
 
@@ -557,98 +645,9 @@ void MainWindow::on_load_clicked()
         tr("Formation"), "",
         tr("Config-File *.cfg(*.cfg);;All Files (*)"));
 
-    adr = address.toStdString();
+    addr = address.toStdString();
     std::cout << "Loading file from " << address.toStdString() << std::endl;
     loadConfig(address.toStdString());
-
-    drawField();
-    drawParticles();
-    refreshUI();
-}
-
-void MainWindow::on_clear_clicked()
-{
-    if (!particles.size()) return;
-
-    if (QMessageBox::warning(this,
-        "Warn", "Are you sure you want to clear all points?",
-            QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes)
-    {
-        particles.clear();
-        for (int i=0; i<=VoronoiParticle::_aiID; i++)
-            ui->comboBox->removeItem(0);
-
-        drawField();
-        drawParticles();
-        refreshUI();
-        VoronoiParticle::_aiID = 0;
-
-        hasSaved = true;
-    }
-}
-
-void MainWindow::on_mirrorX_clicked()
-{
-    hasSaved = false;
-
-    const unsigned s = particles.size();
-    for (unsigned i=0; i<s; i++)
-    {
-        VoronoiParticle np = particles[i];
-        np._x *= -1;
-        np._cx *= -1;
-        np._name = (np._name=="")?"":(np._name+"_mx");
-        np._id += s;
-
-        particles.push_back(np);
-    }
-
-    drawField();
-    drawParticles();
-    refreshUI();
-}
-
-void MainWindow::on_mirrorY_clicked()
-{
-    hasSaved = false;
-
-    const unsigned s = particles.size();
-    for (unsigned i=0; i<s; i++)
-    {
-        VoronoiParticle np = particles[i];
-        np._y *= -1;
-        np._cy *= -1;
-        np._name = (np._name=="")?"":(np._name+"_my");
-        np._id += s;
-
-        particles.push_back(np);
-    }
-
-    drawField();
-    drawParticles();
-    refreshUI();
-}
-
-void MainWindow::on_update_clicked()
-{
-    if ((unsigned)ui->b_id->value() >= particles.size()) return;
-    VoronoiParticle& p = particles[ui->b_id->value()];
-
-    if ((unsigned)ui->b_par->value() < particles.size() && p.id() != (unsigned)ui->b_par->value())
-    {
-        p = VoronoiParticle(ui->b_x->value(), ui->b_y->value(), particles[ui->b_par->value()]);
-        ui->b_cx->setValue(p.cxraw());
-        ui->b_cy->setValue(p.cyraw());
-    }
-    else
-    {
-        p._x = ui->b_x->value()/2;
-        p._y = ui->b_y->value()/2;
-        p._cx = ui->b_cx->value()/2;
-        p._cy = ui->b_cy->value()/2;
-    }
-    p._name = ui->b_name->text().toStdString();
-    p._NumOfSup = ui->NumOfSup->value();
 
     drawField();
     drawParticles();
@@ -689,7 +688,7 @@ void MainWindow::on_listView_doubleClicked(const QModelIndex &index)
     VoronoiParticle::_aiID = 0;
 
     std::cout << "Loading file from " << strPath.toStdString() << std::endl;
-    adr = strPath.toStdString();
+    addr = strPath.toStdString();
     loadConfig(strPath.toStdString());
 
     drawField();
@@ -707,7 +706,7 @@ void MainWindow::on_createNew_clicked()
         ui->comboBox->removeItem(0);
 
     VoronoiParticle::_aiID = 0;
-    adr = "empty";
+    addr = "empty";
 
     drawField();
     drawParticles();
