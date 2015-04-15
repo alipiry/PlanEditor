@@ -83,7 +83,6 @@ void MainWindow::getMouseMove(int x1, int y1, int x2, int y2)
 
 void MainWindow::getParticle(int x, int y, int cx, int cy)
 {
-    on_update_clicked();
     hasSaved = false;
 
     x = x-550/2;
@@ -369,6 +368,7 @@ void MainWindow::on_b_id_editingFinished()
 void MainWindow::on_update_clicked()
 {
     if ((unsigned)ui->b_id->value() >= particles.size()) return;
+    on_b_id_editingFinished();
     VoronoiParticle& p = particles[ui->b_id->value()];
 
     if ((unsigned)ui->b_par->value() < particles.size() && p.id() != (unsigned)ui->b_par->value())
@@ -399,6 +399,7 @@ void MainWindow::on_clear_clicked()
     if (QMessageBox::warning(this, "Warn", "Are you sure you want to clear all points?", QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes)
     {
         particles.clear();
+        VoronoiParticle::_aiID = 0;
         drawField();
         drawParticles();
         refreshUI();
@@ -451,8 +452,10 @@ void MainWindow::on_mirrorY_clicked()
 
 void MainWindow::on_simpleSave_clicked()
 {
-    if (addr != "empty")
+    if (addr != "empty") {
         saveConfig(addr);
+        hasSaved = true;
+    }
     else
         on_save_clicked();
 }
@@ -617,14 +620,15 @@ void MainWindow::loadConfig(const std::string& add)
 
 void MainWindow::on_save_clicked()
 {
-    on_update_clicked();
     QString address = QFileDialog::getSaveFileName(this,
         tr("SetParameters"), "",
         tr("Config-File *.cfg(*.cfg);;All Files (*)"));
-    std::string stradd = address.toStdString();
-    std::cout << "Writing file on " << stradd<< std::endl;
-    saveConfig(stradd);
-    hasSaved = true;
+    if (address != "") {
+        std::string stradd = address.toStdString();
+        std::cout << "Writing file on " << stradd<< std::endl;
+        saveConfig(stradd);
+        hasSaved = true;
+    }
 }
 
 void MainWindow::on_load_clicked()
@@ -634,20 +638,22 @@ void MainWindow::on_load_clicked()
              QMessageBox::No, QMessageBox::Yes) == QMessageBox::No)
         return;
 
-    hasSaved = true;
-    particles.clear();
-    for (int i=0; i<=VoronoiParticle::_aiID; i++)
-        ui->comboBox->removeItem(0);
-
-    VoronoiParticle::_aiID = 0;
-
     QString address = QFileDialog::getOpenFileName(this,
         tr("Formation"), "",
         tr("Config-File *.cfg(*.cfg);;All Files (*)"));
 
-    addr = address.toStdString();
-    std::cout << "Loading file from " << address.toStdString() << std::endl;
-    loadConfig(address.toStdString());
+    if (address != "") {
+        hasSaved = true;
+        particles.clear();
+        for (int i=0; i<=VoronoiParticle::_aiID; i++)
+            ui->comboBox->removeItem(0);
+
+        VoronoiParticle::_aiID = 0;
+
+        addr = address.toStdString();
+        std::cout << "Loading file from " << address.toStdString() << std::endl;
+        loadConfig(address.toStdString());
+    }
 
     drawField();
     drawParticles();
@@ -681,7 +687,6 @@ void MainWindow::on_listView_doubleClicked(const QModelIndex &index)
 
     hasSaved = true;
     particles.clear();
-
     for (int i=0; i<=VoronoiParticle::_aiID; i++)
         ui->comboBox->removeItem(0);
 
@@ -694,7 +699,6 @@ void MainWindow::on_listView_doubleClicked(const QModelIndex &index)
     drawField();
     drawParticles();
     refreshUI();
-    drawParticles();
 }
 
 void MainWindow::on_createNew_clicked()
