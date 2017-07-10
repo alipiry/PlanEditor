@@ -13,6 +13,17 @@ namespace Ui
 {
     class MainWindow;
 }
+class DragWidget : public QFrame
+{
+public:
+    DragWidget(QWidget *parent = 0);
+
+protected:
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dragMoveEvent(QDragMoveEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+};
 
 class VoronoiParticle
 {
@@ -20,6 +31,7 @@ public:
     VoronoiParticle(int X, int Y, const VoronoiParticle& parent) : _x(X), _y(Y), _cx(parent._cx), _cy(parent._cy), _name(parent._name), _id(parent._id), _isChild(true), _isMoved(false) { }
     VoronoiParticle(int X, int Y, std::string Name="", int num=0) : _x(X), _y(Y), _cx(X), _cy(Y), _name(Name), _id(_aiID), _NumOfSup(num), _isChild(false), _isMoved(false) { _aiID++; }
     VoronoiParticle(int X, int Y, int cX, int cY, int num=0, std::string Name="") : _x(X), _y(Y), _cx(cX), _cy(cY), _NumOfSup(num), _name(Name), _id(_aiID), _isChild(false), _isMoved(true) { _aiID++; }
+
 
     int x()  const { return _x  + 100/2 + 450/2; }
     int y()  const { return 100/2 + 300/2 - _y; }
@@ -111,8 +123,17 @@ private slots:
     void on_comboBox_currentIndexChanged(int index);
     void on_listView_doubleClicked(const QModelIndex &index);
     void on_createNew_clicked();
+    void on_b_x_editingFinished();
 //    void drawLineInMiddelField(int x, int y);
 
+    void on_b_y_editingFinished();
+    void on_comboBox_activated(const QString &arg1);
+    void on_comboBox_currentIndexChanged(const QString &arg1);
+    void on_comboBox_activated(int index);
+    void on_NumOfSup_editingFinished();
+    void on_b_name_editingFinished();
+    void on_b_name_objectNameChanged(const QString &objectName);
+    void on_b_name_windowTitleChanged(const QString &title);
 };
 
 #endif // MAINWINDOW_H

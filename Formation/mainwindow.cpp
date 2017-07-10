@@ -125,8 +125,8 @@ void MainWindow::addParticle(const VoronoiParticle& p)
     ui->b_id->setValue(particles.size());
     ui->b_x->setValue(p.xraw()*2);
     ui->b_y->setValue(p.yraw()*2);
-    ui->b_cx->setValue(p.cxraw()*2);
-    ui->b_cy->setValue(p.cyraw()*2);
+//    ui->b_cx->setValue(p.cxraw()*2);
+//    ui->b_cy->setValue(p.cyraw()*2);
     ui->b_name->setText("");
     ui->NumOfSup->setValue(p.num());
     ui->b_par->setValue(p.id());
@@ -169,9 +169,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->simpleSave->setShortcut(QApplication::translate("SetParameters", "Ctrl+S", 0));
     ui->load->setShortcut(QApplication::translate("SetParameters", "Ctrl+L", 0));
     ui->clear->setShortcut(QApplication::translate("SetParameters", "Ctrl+R", 0));
-    ui->update->setShortcut(QApplication::translate("SetParameters","Ctrl+D", 0));
-    ui->mirrorX->setShortcut(QApplication::translate("SetParameters", "Ctrl+X", 0));
-    ui->mirrorY->setShortcut(QApplication::translate("SetParameters", "Ctrl+Y", 0));
 
 
     drawField();
@@ -358,8 +355,8 @@ void MainWindow::on_b_id_editingFinished()
     const VoronoiParticle& p = particles[ui->b_id->value()];
     ui->b_x->setValue(p.xraw()*2);
     ui->b_y->setValue(p.yraw()*2);
-    ui->b_cx->setValue(p.cxraw()*2);
-    ui->b_cy->setValue(p.cyraw()*2);
+//    ui->b_cx->setValue(p.cxraw()*2);
+//    ui->b_cy->setValue(p.cyraw()*2);
     ui->b_name->setText(QString::fromStdString(p._name));
     ui->NumOfSup->setValue(p.num());
     ui->b_par->setValue(p.id());
@@ -374,15 +371,15 @@ void MainWindow::on_update_clicked()
     if ((unsigned)ui->b_par->value() < particles.size() && p.id() != (unsigned)ui->b_par->value())
     {
         p = VoronoiParticle(ui->b_x->value(), ui->b_y->value(), particles[ui->b_par->value()]);
-        ui->b_cx->setValue(p.cxraw());
-        ui->b_cy->setValue(p.cyraw());
+//        ui->b_cx->setValue(p.cxraw());
+//        ui->b_cy->setValue(p.cyraw());
     }
     else
     {
         p._x = ui->b_x->value()/2;
         p._y = ui->b_y->value()/2;
-        p._cx = ui->b_cx->value()/2;
-        p._cy = ui->b_cy->value()/2;
+//        p._cx = ui->b_cx->value()/2;
+//        p._cy = ui->b_cy->value()/2;
     }
     p._name = ui->b_name->text().toStdString();
     p._NumOfSup = ui->NumOfSup->value();
@@ -452,9 +449,11 @@ void MainWindow::on_mirrorY_clicked()
 
 void MainWindow::on_simpleSave_clicked()
 {
+
     if (addr != "empty") {
         saveConfig(addr);
         hasSaved = true;
+       (QMessageBox::warning(this, "Warn", "Saved Successfully, Rock on!", QMessageBox::Ok));
     }
     else
         on_save_clicked();
@@ -646,7 +645,6 @@ void MainWindow::on_load_clicked()
         hasSaved = true;
         particles.clear();
         for (int i=0; i<=VoronoiParticle::_aiID; i++)
-            ui->comboBox->removeItem(0);
 
         VoronoiParticle::_aiID = 0;
 
@@ -668,8 +666,8 @@ void MainWindow::on_comboBox_currentIndexChanged(int index)
     ui->b_id->setValue(index);
     ui->b_x->setValue(p.xraw()*2);
     ui->b_y->setValue(p.yraw()*2);
-    ui->b_cx->setValue(p.cxraw()*2);
-    ui->b_cy->setValue(p.cyraw()*2);
+//    ui->b_cx->setValue(p.cxraw()*2);
+//    ui->b_cy->setValue(p.cyraw()*2);
     ui->b_name->setText(QString::fromStdString(p._name));
     ui->NumOfSup->setValue(p.num());
     ui->b_par->setValue(p.id()+1);
@@ -688,7 +686,7 @@ void MainWindow::on_listView_doubleClicked(const QModelIndex &index)
     hasSaved = true;
     particles.clear();
     for (int i=0; i<=VoronoiParticle::_aiID; i++)
-        ui->comboBox->removeItem(0);
+
 
     VoronoiParticle::_aiID = 0;
 
@@ -707,10 +705,58 @@ void MainWindow::on_createNew_clicked()
     particles.clear();
 
     for (int i=0; i<=VoronoiParticle::_aiID; i++)
-        ui->comboBox->removeItem(0);
 
     VoronoiParticle::_aiID = 0;
     addr = "empty";
+
+    drawField();
+    drawParticles();
+    refreshUI();
+
+}
+
+
+
+void MainWindow::on_b_x_editingFinished()
+{
+    VoronoiParticle& p = particles[ui->b_id->value()];
+
+    p._x = ui->b_x->value() / 2;
+
+    drawField();
+    drawParticles();
+    refreshUI();
+}
+
+
+void MainWindow::on_b_y_editingFinished()
+{
+    VoronoiParticle& p = particles[ui->b_id->value()];
+
+    p._y = ui->b_y->value() / 2;
+
+    drawField();
+    drawParticles();
+    refreshUI();
+}
+
+void MainWindow::on_NumOfSup_editingFinished()
+{
+    VoronoiParticle& p = particles[ui->NumOfSup->value()];
+
+    p._NumOfSup = ui->NumOfSup->value();
+
+    drawField();
+    drawParticles();
+    refreshUI();
+}
+
+void MainWindow::on_b_name_editingFinished()
+{
+    VoronoiParticle& p = particles[ui->b_id->value()];
+    p._name = ui->b_name->text().toStdString();
+    ui->b_name->setText(QString::fromStdString(p._name));
+
 
     drawField();
     drawParticles();

@@ -89,33 +89,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="label_17">
-       <property name="text">
-        <string>Center :</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QSpinBox" name="b_cx">
-       <property name="minimum">
-        <number>-550</number>
-       </property>
-       <property name="maximum">
-        <number>550</number>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QSpinBox" name="b_cy">
-       <property name="minimum">
-        <number>-400</number>
-       </property>
-       <property name="maximum">
-        <number>400</number>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QLabel" name="label_19">
        <property name="text">
         <string>Parent :</string>
@@ -175,16 +148,6 @@
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_6">
      <item>
-      <widget class="QLabel" name="label_23">
-       <property name="text">
-        <string>Select ID :</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="comboBox"/>
-     </item>
-     <item>
       <spacer name="verticalSpacer_26">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -205,10 +168,17 @@
        <property name="sizeHint" stdset="0">
         <size>
          <width>20</width>
-         <height>40</height>
+         <height>45</height>
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="createNew">
+       <property name="text">
+        <string>Create &amp;New</string>
+       </property>
+      </widget>
      </item>
      <item>
       <spacer name="verticalSpacer_28">
@@ -231,10 +201,24 @@
        <property name="sizeHint" stdset="0">
         <size>
          <width>20</width>
-         <height>40</height>
+         <height>50</height>
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="save">
+       <property name="text">
+        <string>&amp;Save As ...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="load">
+       <property name="text">
+        <string>&amp;Load</string>
+       </property>
+      </widget>
      </item>
      <item>
       <spacer name="verticalSpacer_30">
@@ -250,13 +234,6 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="createNew">
-       <property name="text">
-        <string>Create &amp;New</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <spacer name="verticalSpacer_31">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -264,15 +241,15 @@
        <property name="sizeHint" stdset="0">
         <size>
          <width>20</width>
-         <height>40</height>
+         <height>45</height>
         </size>
        </property>
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="update">
+      <widget class="QPushButton" name="simpleSave">
        <property name="text">
-        <string>Up&amp;date</string>
+        <string>&amp;Save</string>
        </property>
       </widget>
      </item>
@@ -290,13 +267,6 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="save">
-       <property name="text">
-        <string>&amp;Save As ...</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <spacer name="verticalSpacer_33">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -308,13 +278,6 @@
         </size>
        </property>
       </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="simpleSave">
-       <property name="text">
-        <string>&amp;Save</string>
-       </property>
-      </widget>
      </item>
      <item>
       <spacer name="verticalSpacer_34">
@@ -330,13 +293,6 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="load">
-       <property name="text">
-        <string>&amp;Load</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <spacer name="verticalSpacer_35">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -350,13 +306,6 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="mirrorX">
-       <property name="text">
-        <string>Mirror-&amp;X</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <spacer name="verticalSpacer_36">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -368,13 +317,6 @@
         </size>
        </property>
       </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mirrorY">
-       <property name="text">
-        <string>Mirror-&amp;Y</string>
-       </property>
-      </widget>
      </item>
      <item>
       <spacer name="verticalSpacer_37">
