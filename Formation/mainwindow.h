@@ -113,27 +113,25 @@ private slots:
     void getMouseMove(int, int, int, int);
     void setLabel(int x, int y);
     void on_b_id_editingFinished();
-    void on_update_clicked();
+//    void on_update_clicked();
     void on_clear_clicked();
-    void on_mirrorX_clicked();
-    void on_mirrorY_clicked();
+//    void on_mirrorX_clicked();
+//    void on_mirrorY_clicked();
     void on_save_clicked();
     void on_load_clicked();
     void on_simpleSave_clicked();
-    void on_comboBox_currentIndexChanged(int index);
+//    void on_comboBox_currentIndexChanged(int index);
     void on_listView_doubleClicked(const QModelIndex &index);
     void on_createNew_clicked();
     void on_b_x_editingFinished();
 //    void drawLineInMiddelField(int x, int y);
 
     void on_b_y_editingFinished();
-    void on_comboBox_activated(const QString &arg1);
-    void on_comboBox_currentIndexChanged(const QString &arg1);
-    void on_comboBox_activated(int index);
+//    void on_comboBox_activated(const QString &arg1);
+//    void on_comboBox_currentIndexChanged(const QString &arg1);
+//    void on_comboBox_activated(int index);
     void on_NumOfSup_editingFinished();
     void on_b_name_editingFinished();
-    void on_b_name_objectNameChanged(const QString &objectName);
-    void on_b_name_windowTitleChanged(const QString &title);
 };
 
 #endif // MAINWINDOW_H

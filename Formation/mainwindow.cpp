@@ -362,32 +362,32 @@ void MainWindow::on_b_id_editingFinished()
     ui->b_par->setValue(p.id());
 }
 
-void MainWindow::on_update_clicked()
-{
-    if ((unsigned)ui->b_id->value() >= particles.size()) return;
-    on_b_id_editingFinished();
-    VoronoiParticle& p = particles[ui->b_id->value()];
+//void MainWindow::on_update_clicked()
+//{
+//    if ((unsigned)ui->b_id->value() >= particles.size()) return;
+//    on_b_id_editingFinished();
+//    VoronoiParticle& p = particles[ui->b_id->value()];
 
-    if ((unsigned)ui->b_par->value() < particles.size() && p.id() != (unsigned)ui->b_par->value())
-    {
-        p = VoronoiParticle(ui->b_x->value(), ui->b_y->value(), particles[ui->b_par->value()]);
-//        ui->b_cx->setValue(p.cxraw());
-//        ui->b_cy->setValue(p.cyraw());
-    }
-    else
-    {
-        p._x = ui->b_x->value()/2;
-        p._y = ui->b_y->value()/2;
-//        p._cx = ui->b_cx->value()/2;
-//        p._cy = ui->b_cy->value()/2;
-    }
-    p._name = ui->b_name->text().toStdString();
-    p._NumOfSup = ui->NumOfSup->value();
+//    if ((unsigned)ui->b_par->value() < particles.size() && p.id() != (unsigned)ui->b_par->value())
+//    {
+//        p = VoronoiParticle(ui->b_x->value(), ui->b_y->value(), particles[ui->b_par->value()]);
+////        ui->b_cx->setValue(p.cxraw());
+////        ui->b_cy->setValue(p.cyraw());
+//    }
+//    else
+//    {
+//        p._x = ui->b_x->value()/2;
+//        p._y = ui->b_y->value()/2;
+////        p._cx = ui->b_cx->value()/2;
+////        p._cy = ui->b_cy->value()/2;
+//    }
+//    p._name = ui->b_name->text().toStdString();
+//    p._NumOfSup = ui->NumOfSup->value();
 
-    drawField();
-    drawParticles();
-    refreshUI();
-}
+//    drawField();
+//    drawParticles();
+//    refreshUI();
+//}
 
 void MainWindow::on_clear_clicked()
 {
@@ -405,47 +405,47 @@ void MainWindow::on_clear_clicked()
     }
 }
 
-void MainWindow::on_mirrorX_clicked()
-{
-    hasSaved = false;
+//void MainWindow::on_mirrorX_clicked()
+//{
+//    hasSaved = false;
 
-    const unsigned s = particles.size();
-    for (unsigned i=0; i<s; i++)
-    {
-        VoronoiParticle np = particles[i];
-        np._x *= -1;
-        np._cx *= -1;
-        np._name = (np._name=="")?"":(np._name+"_mx");
-        np._id += s;
+//    const unsigned s = particles.size();
+//    for (unsigned i=0; i<s; i++)
+//    {
+//        VoronoiParticle np = particles[i];
+//        np._x *= -1;
+//        np._cx *= -1;
+//        np._name = (np._name=="")?"":(np._name+"_mx");
+//        np._id += s;
 
-        particles.push_back(np);
-    }
+//        particles.push_back(np);
+//    }
 
-    drawField();
-    drawParticles();
-    refreshUI();
-}
+//    drawField();
+//    drawParticles();
+//    refreshUI();
+//}
 
-void MainWindow::on_mirrorY_clicked()
-{
-    hasSaved = false;
+//void MainWindow::on_mirrorY_clicked()
+//{
+//    hasSaved = false;
 
-    const unsigned s = particles.size();
-    for (unsigned i=0; i<s; i++)
-    {
-        VoronoiParticle np = particles[i];
-        np._y *= -1;
-        np._cy *= -1;
-        np._name = (np._name=="")?"":(np._name+"_my");
-        np._id += s;
+//    const unsigned s = particles.size();
+//    for (unsigned i=0; i<s; i++)
+//    {
+//        VoronoiParticle np = particles[i];
+//        np._y *= -1;
+//        np._cy *= -1;
+//        np._name = (np._name=="")?"":(np._name+"_my");
+//        np._id += s;
 
-        particles.push_back(np);
-    }
+//        particles.push_back(np);
+//    }
 
-    drawField();
-    drawParticles();
-    refreshUI();
-}
+//    drawField();
+//    drawParticles();
+//    refreshUI();
+//}
 
 void MainWindow::on_simpleSave_clicked()
 {
@@ -658,20 +658,20 @@ void MainWindow::on_load_clicked()
     refreshUI();
 }
 
-void MainWindow::on_comboBox_currentIndexChanged(int index)
-{
-    if ((unsigned)index >= particles.size()) return;
+//void MainWindow::on_comboBox_currentIndexChanged(int index)
+//{
+//    if ((unsigned)index >= particles.size()) return;
 
-    const VoronoiParticle& p = particles[index];
-    ui->b_id->setValue(index);
-    ui->b_x->setValue(p.xraw()*2);
-    ui->b_y->setValue(p.yraw()*2);
-//    ui->b_cx->setValue(p.cxraw()*2);
-//    ui->b_cy->setValue(p.cyraw()*2);
-    ui->b_name->setText(QString::fromStdString(p._name));
-    ui->NumOfSup->setValue(p.num());
-    ui->b_par->setValue(p.id()+1);
-}
+//    const VoronoiParticle& p = particles[index];
+//    ui->b_id->setValue(index);
+//    ui->b_x->setValue(p.xraw()*2);
+//    ui->b_y->setValue(p.yraw()*2);
+////    ui->b_cx->setValue(p.cxraw()*2);
+////    ui->b_cy->setValue(p.cyraw()*2);
+//    ui->b_name->setText(QString::fromStdString(p._name));
+//    ui->NumOfSup->setValue(p.num());
+//    ui->b_par->setValue(p.id()+1);
+//}
 
 void MainWindow::on_listView_doubleClicked(const QModelIndex &index)
 {
@@ -742,8 +742,7 @@ void MainWindow::on_b_y_editingFinished()
 
 void MainWindow::on_NumOfSup_editingFinished()
 {
-    VoronoiParticle& p = particles[ui->NumOfSup->value()];
-
+    VoronoiParticle& p = particles[ui->b_id->value()];
     p._NumOfSup = ui->NumOfSup->value();
 
     drawField();
