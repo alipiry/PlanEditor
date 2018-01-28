@@ -16,6 +16,7 @@ Clone the project and select ```PlanEditor``` as your current working directory
     cd PlanEditor
 
 open ```PlanEditor.pro``` with your Qt-Creator
+
 ```build``` the porject and ```run``` it
 
 Enjoy using Plan Editor :D
