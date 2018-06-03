@@ -12,7 +12,7 @@ It's part of [Task Assignment Module](http://github.com/novinsh/GamePlanner) for
 
 Clone the project and select ```PlanEditor``` as your current working directory
 
-    git clone git@github.com:alipiry/PlanEditor.git
+    git clone git@github.com:yripila/PlanEditor.git
     cd PlanEditor
 
 Open ```PlanEditor.pro``` with your Qt-Creator
